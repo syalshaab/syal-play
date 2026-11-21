@@ -1,0 +1,3711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Syal Play</title>
+<meta name="theme-color" content="#14308f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --bg: #fff8ec;
+  --ink: #1d1b3a;
+  --muted: #5f5a7a;
+  --card: #ffffff;
+  --line: #e8dfcc;
+  --accent: #ff5d73;
+  --accent-2: #ffb70a;
+  --accent-3: #2ec4b6;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161432; --ink: #f6f3ff; --muted: #aca6cc; --card: #221f47; --line: #34305e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161432; --ink: #f6f3ff; --muted: #aca6cc; --card: #221f47; --line: #34305e;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Baloo 2", system-ui, sans-serif;
+  font-size: 17px;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  z-index: 10;
+}
+header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 5;
+  background: var(--bg);
+  border-bottom: 2px solid var(--line);
+  padding: 14px 20px;
+}
+.brand { font-size: 1.6rem; font-weight: 800; color: var(--ink); text-decoration: none; }
+.brand span { color: var(--accent); }
+main { max-width: 960px; margin: 0 auto; padding: 28px 20px 56px; }
+h1 { font-size: clamp(2.2rem, 7vw, 3.8rem); line-height: 1; margin: 0 0 12px; font-weight: 800; }
+.intro p { margin: 0; color: var(--muted); font-size: 1.2rem; max-width: 34ch; }
+.games {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 32px;
+}
+.game {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px;
+  padding: 24px;
+  border-radius: 24px;
+  color: #1d1b3a;
+  text-decoration: none;
+}
+.game h2 { margin: 8px 0 4px; font-size: 1.7rem; font-weight: 800; }
+.game p { margin: 0; font-size: 1.05rem; }
+.icon { font-size: 4rem; line-height: 1; }
+.g1 { background: var(--accent-2); }
+.g2 { background: var(--accent-3); }
+.panel {
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 20px;
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 24px;
+}
+.hud { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 1.2rem; }
+.btn {
+  font: inherit;
+  font-weight: 800;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--bg);
+  cursor: pointer;
+}
+#cv {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 14px;
+  touch-action: none;
+}
+.pad { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
+.pad button {
+  width: 60px;
+  height: 56px;
+  font: inherit;
+  font-size: 1.4rem;
+  border-radius: 16px;
+  border: 2px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+}
+.hint { margin: 14px 0 0; text-align: center; color: var(--muted); font-size: .95rem; }
+.board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.tile {
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 14px;
+  background: var(--accent-2);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.tile.up { background: var(--bg); border: 2px solid var(--line); }
+.tile.done { background: var(--accent-3); }
+.cv { display: block; width: 100%; max-width: 320px; height: auto; margin: 0 auto; border-radius: 14px; touch-action: none; }
+.board3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.hole { aspect-ratio: 1; border: 0; border-radius: 50%; background: var(--line); font-size: 2.4rem; cursor: pointer; display: grid; place-items: center; touch-action: manipulation; }
+.hole.up { background: var(--accent-2); }
+.g3 { background: var(--accent); }
+.g4 { background: #c7b8ff; }
+.g5 { background: #ffd6a5; }
+.g6 { background: #b8f2e6; }
+.g7 { background: #ffb3c1; }
+.g8 { background: #d4f1ff; }
+.g9 { background: #ffd08a; }
+.g10 { background: #c9f2c7; }
+.g11 { background: #ffe8a3; }
+.board2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pad4 { aspect-ratio: 1; border: 0; border-radius: 20px; opacity: .4; cursor: pointer; touch-action: manipulation; }
+.pad4.lit { opacity: 1; }
+.board4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; touch-action: none; }
+.tile2 { aspect-ratio: 1; border-radius: 12px; display: grid; place-items: center; font-size: 1.6rem; font-weight: 800; color: #1d1b3a; }
+.board7 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 8px; background: var(--line); border-radius: 16px; }
+.slot { aspect-ratio: 1; border: 0; border-radius: 50%; background: var(--bg); cursor: pointer; touch-action: manipulation; }
+.slot.red { background: #ff5d73; }
+.slot.yel { background: #ffb70a; }
+.react { display: block; width: 100%; aspect-ratio: 1.6; border: 0; border-radius: 22px; background: #fff8ec; color: #1d1b3a; font: inherit; font-size: 1.5rem; font-weight: 800; cursor: pointer; touch-action: manipulation; }
+.react.wait { background: #ff5d73; }
+.react.go { background: #2ec4b6; }
+.react.early { background: #ffb70a; }
+.g12 { background: #ffcad4; }
+.g13 { background: #cdb4ff; }
+.g14 { background: #a8e6cf; }
+.g15 { background: #ffe29a; }
+.g16 { background: #9ad0f5; }
+.g17 { background: #ffb4a2; }
+.g18 { background: #fff1a8; }
+.g19 { background: #f9c6ff; }
+.g20 { background: #ffc9de; }
+.mines { display: grid; grid-template-columns: repeat(9, 1fr); gap: 3px; }
+.mc { aspect-ratio: 1; padding: 0; border: 0; border-radius: 6px; background: var(--accent-2); color: #1d1b3a; font: inherit; font-weight: 800; cursor: pointer; touch-action: manipulation; }
+.mc.open { background: var(--line); color: var(--ink); }
+.mc.boom { background: var(--accent); }
+.wg { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 6px; }
+.wl { aspect-ratio: 1; display: grid; place-items: center; border: 2px solid var(--line); border-radius: 10px; font-size: 1.6rem; font-weight: 800; text-transform: uppercase; }
+.wl.g { background: #2ec4b6; border-color: #2ec4b6; color: #1d1b3a; }
+.wl.y { background: #ffb70a; border-color: #ffb70a; color: #1d1b3a; }
+.wl.x { background: var(--line); }
+.inp { width: 100%; margin-top: 8px; padding: 10px 12px; border: 2px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; font-size: 1.2rem; }
+.big { margin: 8px 0 14px; text-align: center; font-size: 2rem; font-weight: 800; min-height: 2.4rem; }
+.cell.empty { background: transparent; cursor: default; }
+.board5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.lamp { aspect-ratio: 1; border: 0; border-radius: 12px; background: var(--line); cursor: pointer; touch-action: manipulation; }
+.lamp.on { background: var(--accent-2); }
+.cell { aspect-ratio: 1; border: 0; border-radius: 14px; background: var(--line); color: var(--ink); font: inherit; font-size: 2.6rem; font-weight: 800; cursor: pointer; touch-action: manipulation; }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+footer { text-align: center; color: var(--muted); padding: 0 20px 32px; font-size: .95rem; }
+.games { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; margin-top: 18px; }
+.game { min-height: 150px; padding: 16px; border-radius: 20px; transition: transform .12s; }
+.game:hover { transform: translateY(-3px); }
+.game h2 { font-size: 1.2rem; margin: 6px 0 2px; }
+.game p { font-size: .92rem; line-height: 1.25; }
+.icon { font-size: 2.6rem; }
+.c0 { background: #ffb70a; } .c1 { background: #2ec4b6; } .c2 { background: #ff8fa3; } .c3 { background: #c7b8ff; }
+.c4 { background: #ffd6a5; } .c5 { background: #b8f2e6; } .c6 { background: #ffb3c1; } .c7 { background: #d4f1ff; }
+#q { margin-top: 22px; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 12px 0 4px; }
+.chip { flex: none; padding: 6px 14px; border: 2px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--ink); font: inherit; font-weight: 800; cursor: pointer; }
+.chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.gh { max-width: 440px; margin: 0 auto 14px; }
+.back { color: var(--muted); font-weight: 800; text-decoration: none; }
+.gt { margin: 6px 0 0; font-size: 1.8rem; line-height: 1.1; }
+.opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.opt { padding: 14px 8px; border: 2px solid var(--line); border-radius: 14px; background: var(--bg); color: var(--ink); font: inherit; font-weight: 800; cursor: pointer; touch-action: manipulation; }
+.opt.ok { background: #2ec4b6; border-color: #2ec4b6; color: #1d1b3a; }
+.opt.no { background: #ff5d73; border-color: #ff5d73; color: #1d1b3a; }
+.keys { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.key { width: 38px; height: 42px; border: 2px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); font: inherit; font-weight: 800; text-transform: uppercase; cursor: pointer; }
+.key:disabled { opacity: .3; cursor: default; }
+a.btn { display: inline-block; text-decoration: none; }
+.sec { margin: 24px 0 4px; font-size: 1.3rem; font-weight: 800; }
+.row { display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 12px; scroll-snap-type: x proximity; }
+.thumb { flex: none; width: 128px; height: 128px; padding: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border-radius: 20px; color: #1d1b3a; font-weight: 800; font-size: .95rem; line-height: 1.1; text-align: center; text-decoration: none; scroll-snap-align: start; }
+.thumb span { font-size: 2.6rem; line-height: 1; }
+.ghr { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.ico { padding: 4px 8px; margin-left: 6px; border: 2px solid var(--line); border-radius: 12px; background: var(--card); font-size: 1.2rem; cursor: pointer; }
+.more { max-width: 440px; margin: 24px auto 0; }
+.panel:fullscreen { max-width: none; border-radius: 0; overflow: auto; display: flex; flex-direction: column; justify-content: center; }
+.tapb { flex: 1; padding: 26px 0; border: 0; border-radius: 18px; color: #1d1b3a; font: inherit; font-size: 1.3rem; font-weight: 800; cursor: pointer; touch-action: manipulation; user-select: none; }
+.meter { height: 16px; margin: 4px 0 10px; border-radius: 8px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--accent-3); }
+.meter.b i { background: var(--accent); }
+/* ---- Portal look: bold blue stage, glossy tiles, sidebar categories ---- */
+html { background: #0b1b52; }
+body { color: #fff; background: radial-gradient(900px 500px at 15% -5%, #3d57e6 0%, transparent 60%), radial-gradient(800px 480px at 100% 0%, rgba(150, 70, 255, .45) 0%, transparent 60%), linear-gradient(180deg, #14308f 0%, #0b1b52 100%) fixed; }
+body::before { background: #14308f; }
+header { background: rgba(14, 36, 112, .88); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 0; box-shadow: 0 4px 0 rgba(0, 0, 0, .18); }
+.brand { color: #fff; font-size: 1.8rem; letter-spacing: -.5px; text-shadow: 0 3px 0 rgba(0, 0, 0, .25); }
+.brand span { color: #ffd23f; }
+main { max-width: 1240px; }
+footer { color: #9fb0ff; }
+footer .by { margin-top: 10px; color: #fff; font-size: 1.15rem; font-weight: 800; letter-spacing: .5px; text-shadow: 0 2px 0 rgba(0, 0, 0, .25); }
+.intro h1 { margin: 4px 0 6px; font-size: clamp(1.7rem, 5vw, 2.5rem); color: #fff; text-shadow: 0 3px 0 rgba(0, 0, 0, .2); }
+.intro p { color: #c8d3ff; font-size: 1.05rem; max-width: 46ch; }
+#q { display: block; width: 100%; height: 52px; margin: 18px 0 14px; padding: 0 22px; border: 0; border-radius: 999px; background: #fff; color: #14308f; font-size: 1.1rem; box-shadow: 0 5px 0 rgba(0, 0, 0, .22); }
+#q::placeholder { color: #6f7fc4; }
+.chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px; margin-top: 0; }
+.chips .chip { flex: none; padding: 9px 18px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .13); color: #fff; font-size: 1rem; }
+.chips .chip:hover { background: rgba(255, 255, 255, .24); }
+.chips .chip.on { background: #ffd23f; color: #1b1464; box-shadow: 0 3px 0 #c99a00; }
+#rows .btn { padding: 10px 22px; border-radius: 999px; background: #ffd23f; color: #1b1464; box-shadow: 0 4px 0 #c99a00; }
+.sec { margin: 26px 0 8px; color: #fff; font-size: 1.4rem; text-shadow: 0 2px 0 rgba(0, 0, 0, .2); }
+.c0 { background: linear-gradient(145deg, #ff9a44, #ff4e50); }
+.c1 { background: linear-gradient(145deg, #ffe259, #ffa751); }
+.c2 { background: linear-gradient(145deg, #43e97b, #1fc8b4); }
+.c3 { background: linear-gradient(145deg, #4facfe, #00d2ee); }
+.c4 { background: linear-gradient(145deg, #a18cd1, #e58fd3); }
+.c5 { background: linear-gradient(145deg, #f093fb, #f5576c); }
+.c6 { background: linear-gradient(145deg, #667eea, #8a4fc2); }
+.c7 { background: linear-gradient(145deg, #fa709a, #fcb045); }
+.games { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); grid-auto-flow: dense; gap: 14px; margin-top: 8px; }
+.game { position: relative; display: block; aspect-ratio: 1; min-height: 0; padding: 0; overflow: hidden; border-radius: 22px; box-shadow: 0 6px 0 rgba(0, 0, 0, .22), 0 14px 26px rgba(0, 0, 0, .25); transition: transform .18s ease, box-shadow .18s ease; }
+.game:hover, .game:focus-visible { transform: translateY(-4px) scale(1.04); z-index: 2; box-shadow: 0 10px 0 rgba(0, 0, 0, .22), 0 22px 34px rgba(0, 0, 0, .35); }
+.game .icon { position: absolute; inset: 0 0 24% 0; display: grid; place-items: center; font-size: clamp(2.8rem, 9vw, 4.2rem); filter: drop-shadow(0 4px 0 rgba(0, 0, 0, .18)); }
+.game > div { position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 8px 9px; background: linear-gradient(transparent, rgba(6, 14, 56, .88)); }
+.game h2 { margin: 0; color: #fff; font-size: .95rem; line-height: 1.1; text-align: center; text-shadow: 0 1px 2px rgba(0, 0, 0, .5); }
+.game p { display: none; }
+.row { gap: 14px; padding: 4px 4px 14px; }
+.thumb { width: 140px; height: 140px; color: #fff; font-size: .95rem; text-shadow: 0 1px 2px rgba(0, 0, 0, .5); box-shadow: 0 5px 0 rgba(0, 0, 0, .22); transition: transform .18s ease; }
+.thumb:hover, .thumb:focus-visible { transform: translateY(-3px) scale(1.05); }
+.thumb span { font-size: 3rem; filter: drop-shadow(0 3px 0 rgba(0, 0, 0, .18)); }
+.gh .back { padding: 7px 14px; border-radius: 999px; background: rgba(255, 255, 255, .14); color: #fff; }
+.gt { color: #fff; text-shadow: 0 3px 0 rgba(0, 0, 0, .2); }
+.panel { border: 0; border-radius: 28px; box-shadow: 0 10px 0 rgba(0, 0, 0, .25), 0 26px 48px rgba(0, 0, 0, .35); }
+.more .sec { margin-top: 30px; }
+@media (min-width: 600px) {
+  .games .game:nth-child(12n+1) { grid-column: span 2; grid-row: span 2; }
+  .games .game:nth-child(12n+1) .icon { font-size: 7rem; }
+  .games .game:nth-child(12n+1) h2 { font-size: 1.25rem; }
+}
+@media (min-width: 900px) {
+  #app:has(.chips) { display: grid; grid-template-columns: 190px minmax(0, 1fr); column-gap: 30px; align-items: start; }
+  #app:has(.chips) > * { grid-column: 2; }
+  #app:has(.chips) > .chips { grid-column: 1; grid-row: 1 / span 8; position: sticky; top: 88px; flex-direction: column; gap: 6px; overflow: visible; }
+  .chips .chip { text-align: left; padding: 12px 18px; border-radius: 16px; background: transparent; font-size: 1.05rem; }
+  .chips .chip.on { box-shadow: 0 4px 0 #c99a00; }
+}
+@media (prefers-reduced-motion: reduce) { .game, .thumb { transition: none; } .game:hover, .thumb:hover { transform: none; } }
+/* ---- Graphics pass: one bold look shared by every game ---- */
+canvas { border: 4px solid #fff; border-radius: 16px; box-shadow: 0 6px 0 rgba(0, 0, 0, .25), 0 16px 28px rgba(0, 0, 0, .3); }
+.panel { background: linear-gradient(180deg, var(--card) 0%, var(--bg) 140%); border-top: 6px solid #ffd23f; }
+.hud { font-weight: 800; }
+.hud b { color: var(--accent); text-shadow: 0 2px 0 rgba(0, 0, 0, .12); }
+.btn { background: linear-gradient(180deg, #6d7cff, #3443e0); color: #fff; box-shadow: 0 4px 0 #1f2aa6, 0 8px 14px rgba(20, 30, 120, .25); transition: transform .08s ease, box-shadow .08s ease; }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #1f2aa6; }
+.tile, .cell, .hole, .slot, .lamp, .pad4, .tile2, .mc, .wl, .react { box-shadow: inset 0 3px 0 rgba(255, 255, 255, .45), inset 0 -4px 0 rgba(0, 0, 0, .18), 0 4px 0 rgba(0, 0, 0, .2); transition: transform .08s ease; }
+.tile:active, .cell:active, .hole:active, .slot:active, .lamp:active, .pad4:active, .tile2:active, .mc:active, .react:active { transform: translateY(2px); }
+.opt, .key, .pad button { box-shadow: inset 0 3px 0 rgba(255, 255, 255, .6), 0 4px 0 rgba(0, 0, 0, .12); }
+.opt:active, .key:active, .pad button:active { transform: translateY(2px); }
+.big { text-shadow: 0 3px 0 rgba(0, 0, 0, .15); }
+.gt { text-shadow: 0 3px 0 rgba(0, 0, 0, .25); }
+.inp:focus { outline: 3px solid #ffd23f; outline-offset: 2px; }
+.ico, .chip { box-shadow: 0 3px 0 rgba(0, 0, 0, .18); }
+/* ---- Game logos ---- */
+.logo { display: block; width: 64px; height: 64px; filter: drop-shadow(0 4px 0 rgba(0, 0, 0, .2)); }
+.game .logo { width: 78%; height: auto; max-width: 120px; aspect-ratio: 1; }
+.thumb .logo { width: 64px; height: 64px; }
+.gt .logo { width: 48px; height: 48px; display: inline-block; vertical-align: middle; margin-right: 6px; }
+/* ---- About page and header ---- */
+header { display: flex; justify-content: space-between; align-items: center; }
+.about-link { font-weight: 800; padding: 8px 16px; border-radius: 999px; background: #ffd23f; color: #1b1464; text-decoration: none; box-shadow: 0 3px 0 #c99a00; }
+.about { text-align: center; max-width: 520px; }
+.av { width: 120px; height: 120px; margin: 4px auto 14px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(145deg, #ffd23f, #ff5d73); color: #1b1464; font-size: 2.4rem; font-weight: 800; box-shadow: 0 6px 0 rgba(0, 0, 0, .2); }
+</style>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'></script>
+</head>
+<body>
+<header>
+  <a class="brand" href="#">Syal<span>Play</span></a>
+  <a class='about-link' href='#about'>About</a>
+  <button class='ico' id='sfxb' aria-label='Sound on or off'>🔊</button>
+</header>
+<main id="app"></main>
+<footer>Syal Play: every game here is original and free to play.<div class="by">Pranjal Syal</div></footer>
+
+<script>
+const app = document.getElementById('app');
+// Keep game loops near 60 updates per second on 90, 120, and 144 Hz screens.
+const nativeRaf = window.requestAnimationFrame.bind(window);
+const nativeCaf = window.cancelAnimationFrame.bind(window);
+const pending = {};
+let nextId = 0;
+const lastRun = new WeakMap();
+window.requestAnimationFrame = cb => {
+  const id = ++nextId;
+  const go = t => {
+    if (t - (lastRun.get(cb) || 0) < 13) { pending[id] = nativeRaf(go); return; }
+    delete pending[id];
+    lastRun.set(cb, t);
+    cb(t);
+  };
+  pending[id] = nativeRaf(go);
+  return id;
+};
+window.cancelAnimationFrame = id => {
+  if (id in pending) { nativeCaf(pending[id]); delete pending[id]; }
+};
+let stop = () => {};
+const rand = n => Math.floor(Math.random() * n);
+
+function snake() {
+  app.innerHTML = `
+  <div class="panel">
+    <div class="hud"><span>Score <b id="sc">0</b></span><button class="btn" id="again">Restart</button></div>
+    <canvas id="cv" width="320" height="320" aria-label="Snake game board"></canvas>
+    <div class="pad">
+      <button data-x="0" data-y="-1" aria-label="Up">▲</button>
+      <button data-x="-1" data-y="0" aria-label="Left">◀</button>
+      <button data-x="1" data-y="0" aria-label="Right">▶</button>
+      <button data-x="0" data-y="1" aria-label="Down">▼</button>
+    </div>
+    <p class="hint">Arrow keys or WASD, swipe on the board, or tap the buttons.</p>
+  </div>`;
+
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const N = 16, S = 20;
+  let body, dir, next, food, score, timer, over;
+  const same = (a, b) => a.x === b.x && a.y === b.y;
+
+  function place() {
+    do { food = { x: rand(N), y: rand(N) }; } while (body.some(p => same(p, food)));
+  }
+  function draw() {
+    ctx.fillStyle = '#1d1b3a';
+    ctx.fillRect(0, 0, 320, 320);
+    ctx.fillStyle = '#ff5d73';
+    ctx.fillRect(food.x * S + 3, food.y * S + 3, S - 6, S - 6);
+    body.forEach((p, i) => {
+      ctx.fillStyle = i ? '#2ec4b6' : '#ffb70a';
+      ctx.fillRect(p.x * S + 1, p.y * S + 1, S - 2, S - 2);
+    });
+    if (over) {
+      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      ctx.fillRect(0, 0, 320, 320);
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.font = '800 26px system-ui, sans-serif';
+      ctx.fillText('Game over', 160, 150);
+      ctx.font = '600 16px system-ui, sans-serif';
+      ctx.fillText('Press Restart to play again', 160, 180);
+    }
+  }
+  function end() { over = true; clearInterval(timer); draw(); }
+  function tick() {
+    dir = next;
+    const head = { x: body[0].x + dir.x, y: body[0].y + dir.y };
+    const hitWall = head.x < 0 || head.y < 0 || head.x >= N || head.y >= N;
+    if (hitWall || body.some(p => same(p, head))) return end();
+    body.unshift(head);
+    if (same(head, food)) {
+      score++;
+      document.getElementById('sc').textContent = score;
+      place();
+    } else {
+      body.pop();
+    }
+    draw();
+  }
+  function restart() {
+    body = [{ x: 8, y: 8 }, { x: 7, y: 8 }, { x: 6, y: 8 }];
+    dir = next = { x: 1, y: 0 };
+    score = 0;
+    over = false;
+    document.getElementById('sc').textContent = 0;
+    place();
+    draw();
+    clearInterval(timer);
+    timer = setInterval(tick, 120);
+  }
+  function turn(x, y) {
+    if (x === -dir.x && y === -dir.y) return; // no instant reversal
+    next = { x, y };
+  }
+
+  const keys = {
+    ArrowUp: [0, -1], w: [0, -1], W: [0, -1],
+    ArrowDown: [0, 1], s: [0, 1], S: [0, 1],
+    ArrowLeft: [-1, 0], a: [-1, 0], A: [-1, 0],
+    ArrowRight: [1, 0], d: [1, 0], D: [1, 0]
+  };
+  function onKey(e) {
+    const k = keys[e.key];
+    if (k) { e.preventDefault(); turn(...k); }
+  }
+  document.addEventListener('keydown', onKey);
+
+  app.querySelectorAll('.pad button').forEach(b => {
+    b.onclick = () => turn(+b.dataset.x, +b.dataset.y);
+  });
+  document.getElementById('again').onclick = restart;
+
+  let sx = 0, sy = 0;
+  cv.addEventListener('touchstart', e => {
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+  }, { passive: true });
+  cv.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return;
+    if (Math.abs(dx) > Math.abs(dy)) turn(Math.sign(dx), 0);
+    else turn(0, Math.sign(dy));
+  });
+
+  restart();
+  return () => {
+    clearInterval(timer);
+    document.removeEventListener('keydown', onKey);
+  };
+}
+
+function memory(set) {
+  const icons = set || ['🍎', '🚀', '🎈', '🐸', '⭐', '🍩', '🎯', '🌵'];
+  app.innerHTML = `
+  <div class="panel">
+    <div class="hud"><span>Moves <b id="mv">0</b></span><button class="btn" id="shuffle">New game</button></div>
+    <div class="board" id="board"></div>
+    <p class="hint" id="msg">Find all eight pairs.</p>
+  </div>`;
+
+  const board = document.getElementById('board');
+  const mvEl = document.getElementById('mv');
+  const msgEl = document.getElementById('msg');
+  let deck, opened, matched, moves, busy;
+
+  function show(t) {
+    t.classList.add('up');
+    t.firstElementChild.textContent = deck[t.dataset.i];
+  }
+  function hide(t) {
+    t.classList.remove('up');
+    t.firstElementChild.textContent = '?';
+  }
+  function deal() {
+    deck = [...icons, ...icons].sort(() => Math.random() - 0.5);
+    opened = []; matched = 0; moves = 0; busy = false;
+    mvEl.textContent = 0;
+    msgEl.textContent = 'Find all eight pairs.';
+    board.innerHTML = deck.map((_, i) =>
+      `<button class="tile" data-i="${i}" aria-label="Hidden card ${i + 1}"><span>?</span></button>`
+    ).join('');
+  }
+
+  board.onclick = e => {
+    const t = e.target.closest('.tile');
+    if (!t || busy || t.classList.contains('up') || t.classList.contains('done')) return;
+    show(t);
+    opened.push(t);
+    if (opened.length === 2) {
+      moves++;
+      mvEl.textContent = moves;
+      busy = true;
+      const [a, b] = opened;
+      if (deck[a.dataset.i] === deck[b.dataset.i]) {
+        a.classList.add('done');
+        b.classList.add('done');
+        matched++;
+        opened = [];
+        busy = false;
+        if (matched === icons.length) msgEl.textContent = `Solved in ${moves} moves!`;
+      } else {
+        setTimeout(() => {
+          hide(a); hide(b);
+          opened = [];
+          busy = false;
+        }, 700);
+      }
+    }
+  };
+
+  document.getElementById('shuffle').onclick = deal;
+  deal();
+  return () => {};
+}
+
+function whack(emoji, ms) {
+  app.innerHTML = `
+  <div class="panel">
+    <div class="hud"><span>Score <b id="wsc">0</b></span><span>Time <b id="wt">30</b></span><button class="btn" id="wgo">Start</button></div>
+    <div class="board3" id="holes"></div>
+    <p class="hint" id="wmsg">Tap or click the moles before they hide.</p>
+  </div>`;
+  const holes = document.getElementById('holes');
+  const wsc = document.getElementById('wsc');
+  const wt = document.getElementById('wt');
+  const wgo = document.getElementById('wgo');
+  const wmsg = document.getElementById('wmsg');
+  holes.innerHTML = Array.from({ length: 9 }, (_, i) =>
+    `<button class="hole" data-i="${i}" aria-label="Hole ${i + 1}"></button>`).join('');
+  let score = 0, time = 30, up = -1, running = false, clock, moles;
+  const setMole = (i, on) => {
+    holes.children[i].classList.toggle('up', on);
+    holes.children[i].textContent = on ? (emoji || '🐹') : '';
+  };
+  function pop() {
+    if (up >= 0) setMole(up, false);
+    up = rand(9);
+    setMole(up, true);
+  }
+  function finish() {
+    running = false;
+    clearInterval(clock);
+    clearInterval(moles);
+    if (up >= 0) setMole(up, false);
+    up = -1;
+    wgo.textContent = 'Play again';
+    wmsg.textContent = `Time's up! You scored ${score}.`;
+  }
+  wgo.onclick = () => {
+    score = 0; time = 30; running = true;
+    wsc.textContent = 0;
+    wt.textContent = time;
+    wgo.textContent = 'Restart';
+    wmsg.textContent = 'Tap or click the moles before they hide.';
+    clearInterval(clock);
+    clearInterval(moles);
+    pop();
+    moles = setInterval(pop, ms || 800);
+    clock = setInterval(() => {
+      wt.textContent = --time;
+      if (time <= 0) finish();
+    }, 1000);
+    wgo.blur();
+  };
+  holes.onclick = e => {
+    const h = e.target.closest('.hole');
+    if (!h || !running || +h.dataset.i !== up) return;
+    wsc.textContent = ++score;
+    pop();
+  };
+  return () => { clearInterval(clock); clearInterval(moles); };
+}
+
+function glide() {
+  app.innerHTML = `
+  <div class="panel">
+    <div class="hud"><span>Score <b id="gsc">0</b></span><button class="btn" id="ggo">Start</button></div>
+    <canvas id="gcv" class="cv" width="320" height="480" aria-label="Glide game board"></canvas>
+    <p class="hint">Press Space, tap, or click to flap. Fly through the gaps.</p>
+  </div>`;
+  const cv = document.getElementById('gcv');
+  const ctx = cv.getContext('2d');
+  const gsc = document.getElementById('gsc');
+  const ggo = document.getElementById('ggo');
+  const W = 320, H = 480, GAP = 140, PW = 52, BX = 80, BR = 12;
+  let y, vy, walls, score, state, raf;
+  function reset() {
+    y = H / 2; vy = 0; walls = []; score = 0; state = 'ready';
+    gsc.textContent = 0;
+  }
+  function flap() {
+    if (state === 'over') return;
+    state = 'play';
+    vy = -7;
+  }
+  function die() {
+    state = 'over';
+    ggo.textContent = 'Try again';
+  }
+  function step() {
+    vy += 0.45;
+    y += vy;
+    if (y - BR < 0 || y + BR > H) return die();
+    walls.forEach(w => { w.x -= 2.6; });
+    if (!walls.length || walls[walls.length - 1].x < W - 170) {
+      walls.push({ x: W, top: 50 + rand(H - GAP - 100), passed: false });
+    }
+    walls = walls.filter(w => w.x > -PW);
+    for (const w of walls) {
+      if (!w.passed && w.x + PW < BX - BR) { w.passed = true; gsc.textContent = ++score; }
+      if (BX + BR > w.x && BX - BR < w.x + PW && (y - BR < w.top || y + BR > w.top + GAP)) return die();
+    }
+  }
+  function draw() {
+    ctx.fillStyle = '#1d1b3a';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#2ec4b6';
+    for (const w of walls) {
+      ctx.fillRect(w.x, 0, PW, w.top);
+      ctx.fillRect(w.x, w.top + GAP, PW, H - w.top - GAP);
+    }
+    ctx.fillStyle = '#ffb70a';
+    ctx.beginPath();
+    ctx.arc(BX, y, BR, 0, Math.PI * 2);
+    ctx.fill();
+    if (state !== 'play') {
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.font = '800 26px system-ui, sans-serif';
+      ctx.fillText(state === 'over' ? 'Crash!' : 'Ready?', W / 2, H / 2 - 40);
+      ctx.font = '600 16px system-ui, sans-serif';
+      ctx.fillText(state === 'over' ? `Score ${score}. Press Try again.` : 'Tap or press Space to start', W / 2, H / 2 - 10);
+    }
+  }
+  function loop() {
+    if (state === 'play') step();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+  const onKey = e => {
+    if (e.code === 'Space' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+      e.preventDefault();
+      flap();
+    }
+  };
+  document.addEventListener('keydown', onKey);
+  cv.addEventListener('pointerdown', flap);
+  ggo.onclick = () => { reset(); ggo.textContent = 'Restart'; ggo.blur(); };
+  reset();
+  loop();
+  return () => {
+    cancelAnimationFrame(raf);
+    document.removeEventListener('keydown', onKey);
+  };
+}
+
+function bricks() {
+  app.innerHTML = `
+  <div class="panel">
+    <div class="hud"><span>Score <b id="bsc">0</b></span><span>Lives <b id="blv">3</b></span><button class="btn" id="bgo">Start</button></div>
+    <canvas id="bcv" class="cv" width="320" height="400" aria-label="Brick Breaker board"></canvas>
+    <p class="hint">Move with your mouse or finger, or use the arrow keys. Click, tap, or press Space to launch.</p>
+  </div>`;
+  const cv = document.getElementById('bcv');
+  const ctx = cv.getContext('2d');
+  const bsc = document.getElementById('bsc');
+  const blv = document.getElementById('blv');
+  const bgo = document.getElementById('bgo');
+  const W = 320, H = 400, PW = 64, PY = H - 30, R = 6;
+  const COLORS = ['#ff5d73', '#ffb70a', '#2ec4b6', '#c7b8ff', '#ff8fab'];
+  let px, bx, by, dx, dy, lives, score, wall, state, raf;
+  function build() {
+    wall = [];
+    for (let r = 0; r < 5; r++) {
+      for (let c = 0; c < 6; c++) {
+        wall.push({ x: 6 + c * 52, y: 40 + r * 22, color: COLORS[r], alive: true });
+      }
+    }
+  }
+  function reset() {
+    px = (W - PW) / 2;
+    bx = px + PW / 2;
+    by = PY - R - 2;
+    dx = 0; dy = 0; lives = 3; score = 0; state = 'ready';
+    build();
+    bsc.textContent = 0;
+    blv.textContent = 3;
+  }
+  function launch() {
+    if (state !== 'ready') return;
+    state = 'play';
+    dx = 2.5 * (Math.random() < 0.5 ? -1 : 1);
+    dy = -3.2;
+  }
+  function move(x) {
+    px = Math.max(0, Math.min(W - PW, x - PW / 2));
+  }
+  function loseLife() {
+    lives--;
+    blv.textContent = lives;
+    if (lives <= 0) {
+      state = 'over';
+      bgo.textContent = 'Try again';
+    } else {
+      state = 'ready';
+    }
+  }
+  function step() {
+    if (state === 'ready') {
+      bx = px + PW / 2;
+      by = PY - R - 2;
+      return;
+    }
+    if (state !== 'play') return;
+    bx += dx;
+    by += dy;
+    if (bx < R || bx > W - R) {
+      dx = -dx;
+      bx = Math.max(R, Math.min(W - R, bx));
+    }
+    if (by < R) { dy = Math.abs(dy); by = R; }
+    if (dy > 0 && by + R >= PY && by + R <= PY + 12 && bx >= px - R && bx <= px + PW + R) {
+      dy = -Math.abs(dy);
+      dx = ((bx - (px + PW / 2)) / (PW / 2)) * 3.5;
+      if (Math.abs(dx) < 0.8) dx = dx < 0 ? -0.8 : 0.8;
+      by = PY - R;
+    }
+    for (const b of wall) {
+      if (!b.alive || bx + R <= b.x || bx - R >= b.x + 48 || by + R <= b.y || by - R >= b.y + 16) continue;
+      b.alive = false;
+      score += 10;
+      bsc.textContent = score;
+      const ox = Math.min(bx + R - b.x, b.x + 48 - (bx - R));
+      const oy = Math.min(by + R - b.y, b.y + 16 - (by - R));
+      if (ox < oy) dx = -dx; else dy = -dy;
+      break;
+    }
+    if (wall.every(b => !b.alive)) {
+      state = 'won';
+      bgo.textContent = 'Play again';
+      return;
+    }
+    if (by - R > H) loseLife();
+  }
+  function draw() {
+    ctx.fillStyle = '#1d1b3a';
+    ctx.fillRect(0, 0, W, H);
+    for (const b of wall) {
+      if (!b.alive) continue;
+      ctx.fillStyle = b.color;
+      ctx.fillRect(b.x, b.y, 48, 16);
+    }
+    ctx.fillStyle = '#f6f3ff';
+    ctx.fillRect(px, PY, PW, 10);
+    ctx.beginPath();
+    ctx.arc(bx, by, R, 0, Math.PI * 2);
+    ctx.fill();
+    if (state !== 'play') {
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.font = '800 24px system-ui, sans-serif';
+      const title = { ready: 'Ready?', over: 'Game over', won: 'Wall cleared!' }[state];
+      ctx.fillText(title, W / 2, H / 2 + 60);
+      ctx.font = '600 16px system-ui, sans-serif';
+      ctx.fillText(state === 'ready' ? 'Click, tap, or press Space' : `Score ${score}`, W / 2, H / 2 + 90);
+    }
+  }
+  function loop() {
+    step();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+  const onMove = e => {
+    const r = cv.getBoundingClientRect();
+    move((e.clientX - r.left) * (W / r.width));
+  };
+  const onKey = e => {
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+      e.preventDefault();
+      move(px + PW / 2 - 14);
+    } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+      e.preventDefault();
+      move(px + PW / 2 + 14);
+    } else if (e.key === ' ' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      launch();
+    }
+  };
+  cv.addEventListener('pointermove', onMove);
+  cv.addEventListener('pointerdown', e => { onMove(e); launch(); });
+  document.addEventListener('keydown', onKey);
+  bgo.onclick = () => { reset(); bgo.textContent = 'Restart'; bgo.blur(); };
+  reset();
+  loop();
+  return () => {
+    cancelAnimationFrame(raf);
+    document.removeEventListener('keydown', onKey);
+  };
+}
+
+function ttt() {
+  app.innerHTML = `
+  <div class="panel">
+    <div class="hud"><span id="tmsg"></span><button class="btn" id="tgo">New game</button></div>
+    <div class="board3" id="tb"></div>
+    <p class="hint">You are X. The computer plays O.</p>
+  </div>`;
+  const tb = document.getElementById('tb');
+  const tm = document.getElementById('tmsg');
+  const LINES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+  let cells, over;
+  const winner = b => {
+    for (const [i, j, k] of LINES) if (b[i] && b[i] === b[j] && b[i] === b[k]) return b[i];
+    return b.every(Boolean) ? 'draw' : null;
+  };
+  const minimax = (b, turn) => {
+    const w = winner(b);
+    if (w) return w === 'O' ? 10 : w === 'X' ? -10 : 0;
+    const scores = [];
+    b.forEach((v, i) => {
+      if (v) return;
+      const nb = b.slice();
+      nb[i] = turn;
+      scores.push(minimax(nb, turn === 'O' ? 'X' : 'O'));
+    });
+    return turn === 'O' ? Math.max(...scores) : Math.min(...scores);
+  };
+  const computerMove = b => {
+    let pick = -1, top = -Infinity;
+    b.forEach((v, i) => {
+      if (v) return;
+      const nb = b.slice();
+      nb[i] = 'O';
+      const s = minimax(nb, 'X');
+      if (s > top) { top = s; pick = i; }
+    });
+    return pick;
+  };
+  const update = () => {
+    tb.innerHTML = cells.map((v, i) =>
+      `<button class="cell" data-i="${i}" aria-label="Square ${i + 1}">${v}</button>`).join('');
+    const w = winner(cells);
+    if (w) {
+      over = true;
+      tm.textContent = w === 'draw' ? "It's a draw." : w === 'X' ? 'You win!' : 'The computer wins.';
+    } else {
+      tm.textContent = 'Your turn';
+    }
+  };
+  const newGame = () => { cells = Array(9).fill(''); over = false; update(); };
+  tb.onclick = e => {
+    const c = e.target.closest('.cell');
+    if (!c || over || cells[c.dataset.i]) return;
+    cells[c.dataset.i] = 'X';
+    if (!winner(cells)) cells[computerMove(cells)] = 'O';
+    update();
+  };
+  document.getElementById('tgo').onclick = newGame;
+  newGame();
+  return () => {};
+}
+
+function pong() {
+  app.innerHTML = `
+  <div class="panel">
+    <div class="hud"><span>You <b id="pa">0</b></span><span>CPU <b id="pb">0</b></span><button class="btn" id="pgo">Start</button></div>
+    <canvas id="pcv" class="cv" width="320" height="420" aria-label="Pong board"></canvas>
+    <p class="hint">Move your mouse or finger, or use the Up and Down arrow keys. First to five wins.</p>
+  </div>`;
+  const cv = document.getElementById('pcv');
+  const ctx = cv.getContext('2d');
+  const pa = document.getElementById('pa');
+  const pb = document.getElementById('pb');
+  const pgo = document.getElementById('pgo');
+  const W = 320, H = 420, PH = 70, R = 6;
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  let py, cy, bx, by, dx, dy, a, b, state, raf;
+  function serve(dir) {
+    bx = W / 2; by = H / 2;
+    dx = 3 * dir;
+    dy = (Math.random() * 2 - 1) * 2.5;
+  }
+  function reset() {
+    py = cy = (H - PH) / 2;
+    a = 0; b = 0; state = 'ready';
+    pa.textContent = 0; pb.textContent = 0;
+    serve(1);
+  }
+  function point(playerScored) {
+    if (playerScored) { a++; pa.textContent = a; serve(1); }
+    else { b++; pb.textContent = b; serve(-1); }
+    if (a >= 5 || b >= 5) { state = 'over'; pgo.textContent = 'Play again'; }
+  }
+  function step() {
+    if (state !== 'play') return;
+    bx += dx;
+    by += dy;
+    if (by < R || by > H - R) { dy = -dy; by = clamp(by, R, H - R); }
+    if (dx < 0 && bx - R <= 18 && bx + R >= 10 && by >= py - R && by <= py + PH + R) {
+      dx = -dx;
+      bx = 18 + R;
+      dy = clamp(dy + ((by - (py + PH / 2)) / (PH / 2)) * 2, -6, 6);
+    }
+    if (dx > 0 && bx + R >= W - 18 && bx - R <= W - 10 && by >= cy - R && by <= cy + PH + R) {
+      dx = -dx;
+      bx = W - 18 - R;
+    }
+    cy = clamp(cy + clamp((by - (cy + PH / 2)) * 0.07, -3, 3), 0, H - PH);
+    if (bx < -R) point(false);
+    else if (bx > W + R) point(true);
+  }
+  function draw() {
+    ctx.fillStyle = '#1d1b3a';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = 'rgba(246,243,255,.25)';
+    ctx.fillRect(W / 2 - 1, 0, 2, H);
+    ctx.fillStyle = '#2ec4b6';
+    ctx.fillRect(10, py, 8, PH);
+    ctx.fillStyle = '#ff5d73';
+    ctx.fillRect(W - 18, cy, 8, PH);
+    ctx.fillStyle = '#ffb70a';
+    ctx.beginPath();
+    ctx.arc(bx, by, R, 0, Math.PI * 2);
+    ctx.fill();
+    if (state !== 'play') {
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.font = '800 24px system-ui, sans-serif';
+      ctx.fillText(state === 'over' ? (a > b ? 'You win!' : 'CPU wins') : 'Ready?', W / 2, H / 2 - 40);
+      ctx.font = '600 16px system-ui, sans-serif';
+      ctx.fillText(state === 'over' ? 'Press Play again' : 'Press Start to serve', W / 2, H / 2 - 10);
+    }
+  }
+  function loop() {
+    step();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+  const follow = e => {
+    const r = cv.getBoundingClientRect();
+    py = clamp((e.clientY - r.top) * (H / r.height) - PH / 2, 0, H - PH);
+  };
+  const onKey = e => {
+    if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+      e.preventDefault();
+      py = clamp(py - 14, 0, H - PH);
+    } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+      e.preventDefault();
+      py = clamp(py + 14, 0, H - PH);
+    }
+  };
+  cv.addEventListener('pointermove', follow);
+  cv.addEventListener('pointerdown', follow);
+  document.addEventListener('keydown', onKey);
+  pgo.onclick = () => { reset(); state = 'play'; pgo.textContent = 'Restart'; pgo.blur(); };
+  reset();
+  loop();
+  return () => {
+    cancelAnimationFrame(raf);
+    document.removeEventListener('keydown', onKey);
+  };
+}
+
+function echo() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Round <b id='er'>0</b></span><button class='btn' id='ego'>Start</button></div>
+    <div class='board2' id='eb'></div>
+    <p class='hint' id='em'>Press Start, then repeat the colors you see.</p>
+  </div>`;
+  const COL = ['#ff5d73', '#ffb70a', '#2ec4b6', '#c7b8ff'];
+  const eb = document.getElementById('eb');
+  const er = document.getElementById('er');
+  const em = document.getElementById('em');
+  const ego = document.getElementById('ego');
+  eb.innerHTML = COL.map((c, i) => `<button class='pad4' data-i='${i}' style='background:${c}' aria-label='Color ${i + 1}'></button>`).join('');
+  const timers = [];
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+  let seq = [], input = [], busy = true;
+  const flash = i => {
+    const el = eb.children[i];
+    el.classList.add('lit');
+    later(() => el.classList.remove('lit'), 350);
+  };
+  function playSeq() {
+    busy = true;
+    em.textContent = 'Watch...';
+    seq.forEach((v, k) => later(() => flash(v), 600 + k * 550));
+    later(() => { busy = false; input = []; em.textContent = 'Your turn.'; }, 600 + seq.length * 550);
+  }
+  ego.onclick = () => {
+    timers.splice(0).forEach(clearTimeout);
+    seq = [rand(4)];
+    er.textContent = 1;
+    ego.textContent = 'Restart';
+    ego.blur();
+    playSeq();
+  };
+  eb.onclick = e => {
+    const b = e.target.closest('.pad4');
+    if (!b || busy || !seq.length) return;
+    const i = +b.dataset.i;
+    flash(i);
+    input.push(i);
+    const k = input.length - 1;
+    if (input[k] !== seq[k]) {
+      const done = seq.length - 1;
+      seq = [];
+      busy = true;
+      em.textContent = `Wrong! You finished ${done} round${done === 1 ? '' : 's'}.`;
+      ego.textContent = 'Try again';
+      return;
+    }
+    if (input.length === seq.length) {
+      busy = true;
+      em.textContent = 'Nice!';
+      later(() => { seq.push(rand(4)); er.textContent = seq.length; playSeq(); }, 800);
+    }
+  };
+  return () => timers.splice(0).forEach(clearTimeout);
+}
+
+function merge() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Score <b id='ms'>0</b></span><button class='btn' id='mgo'>New game</button></div>
+    <div class='board4' id='mb'></div>
+    <p class='hint' id='mm'>Slide with arrow keys, WASD, or a swipe. Merge matching tiles.</p>
+  </div>`;
+  const mb = document.getElementById('mb');
+  const ms = document.getElementById('ms');
+  const mm = document.getElementById('mm');
+  const COLORS = { 2: '#ffe8b3', 4: '#ffd08a', 8: '#ffb36b', 16: '#ff9a6b', 32: '#ff7b73', 64: '#ff5d73' };
+  let g, score, over, won;
+  const add = () => {
+    const empty = [];
+    g.forEach((v, i) => { if (!v) empty.push(i); });
+    if (empty.length) g[empty[rand(empty.length)]] = Math.random() < 0.9 ? 2 : 4;
+  };
+  const canMove = () => g.some((v, i) => !v || (i % 4 < 3 && v === g[i + 1]) || (i < 12 && v === g[i + 4]));
+  const draw = () => {
+    mb.innerHTML = g.map(v => `<div class='tile2' style='background:${v ? (COLORS[v] || '#c7b8ff') : 'var(--line)'}'>${v || ''}</div>`).join('');
+  };
+  const newGame = () => {
+    g = Array(16).fill(0);
+    score = 0; over = false; won = false;
+    add(); add();
+    ms.textContent = 0;
+    mm.textContent = 'Slide with arrow keys, WASD, or a swipe. Merge matching tiles.';
+    draw();
+  };
+  function slide(dir) {
+    if (over) return;
+    let moved = false;
+    for (let k = 0; k < 4; k++) {
+      const idx = [0, 1, 2, 3].map(j =>
+        dir === 'L' ? k * 4 + j : dir === 'R' ? k * 4 + 3 - j : dir === 'U' ? j * 4 + k : (3 - j) * 4 + k);
+      const vals = idx.map(i => g[i]).filter(Boolean);
+      const out = [];
+      for (let j = 0; j < vals.length; j++) {
+        if (vals[j] === vals[j + 1]) { out.push(vals[j] * 2); score += vals[j] * 2; j++; }
+        else out.push(vals[j]);
+      }
+      while (out.length < 4) out.push(0);
+      idx.forEach((i, j) => { if (g[i] !== out[j]) moved = true; g[i] = out[j]; });
+    }
+    if (!moved) return;
+    add();
+    ms.textContent = score;
+    if (!won && g.includes(64)) { won = true; mm.textContent = 'You made 64! Keep going or start a new game.'; }
+    if (!canMove()) { over = true; mm.textContent = 'No moves left. Press New game to try again.'; }
+    draw();
+  }
+  const KEYS = { ArrowLeft: 'L', a: 'L', A: 'L', ArrowRight: 'R', d: 'R', D: 'R', ArrowUp: 'U', w: 'U', W: 'U', ArrowDown: 'D', s: 'D', S: 'D' };
+  const onKey = e => { const d = KEYS[e.key]; if (d) { e.preventDefault(); slide(d); } };
+  let sx = 0, sy = 0;
+  mb.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  mb.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+    slide(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'R' : 'L') : (dy > 0 ? 'D' : 'U'));
+  });
+  document.addEventListener('keydown', onKey);
+  document.getElementById('mgo').onclick = e => { newGame(); e.currentTarget.blur(); };
+  newGame();
+  return () => document.removeEventListener('keydown', onKey);
+}
+
+function connect() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span id='cm'>Your turn (red)</span><button class='btn' id='cgo'>New game</button></div>
+    <div class='board7' id='cb'></div>
+    <p class='hint'>Get four discs in a row before the computer does. Click any slot in a column.</p>
+  </div>`;
+  const cb = document.getElementById('cb');
+  const cm = document.getElementById('cm');
+  const R = 6, C = 7;
+  let g, over;
+  const landing = c => { for (let r = R - 1; r >= 0; r--) if (!g[r][c]) return r; return -1; };
+  const full = () => g[0].every(Boolean);
+  const won = p => {
+    for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) {
+      if (g[r][c] !== p) continue;
+      for (const [dr, dc] of [[0, 1], [1, 0], [1, 1], [1, -1]]) {
+        let k = 1;
+        while (k < 4 && g[r + dr * k] && g[r + dr * k][c + dc * k] === p) k++;
+        if (k === 4) return true;
+      }
+    }
+    return false;
+  };
+  const cpuMove = () => {
+    const cols = [0, 1, 2, 3, 4, 5, 6].filter(c => landing(c) >= 0);
+    for (const p of ['Y', 'R']) {
+      for (const c of cols) {
+        const r = landing(c);
+        g[r][c] = p;
+        const hit = won(p);
+        g[r][c] = '';
+        if (hit) return c;
+      }
+    }
+    return cols.sort((a, b) => Math.abs(a - 3) - Math.abs(b - 3))[0];
+  };
+  const draw = () => {
+    cb.innerHTML = g.flat().map((v, i) =>
+      `<button class='slot${v === 'R' ? ' red' : v === 'Y' ? ' yel' : ''}' data-c='${i % C}' aria-label='Column ${(i % C) + 1}'></button>`).join('');
+  };
+  const end = msg => { over = true; cm.textContent = msg; draw(); };
+  cb.onclick = e => {
+    const s = e.target.closest('.slot');
+    if (!s || over) return;
+    const c = +s.dataset.c;
+    const r = landing(c);
+    if (r < 0) return;
+    g[r][c] = 'R';
+    if (won('R')) return end('You win!');
+    if (full()) return end(`It's a draw.`);
+    const cc = cpuMove();
+    g[landing(cc)][cc] = 'Y';
+    if (won('Y')) return end('The computer wins.');
+    if (full()) return end(`It's a draw.`);
+    cm.textContent = 'Your turn (red)';
+    draw();
+  };
+  const newGame = () => {
+    g = Array.from({ length: R }, () => Array(C).fill(''));
+    over = false;
+    cm.textContent = 'Your turn (red)';
+    draw();
+  };
+  document.getElementById('cgo').onclick = e => { newGame(); e.currentTarget.blur(); };
+  newGame();
+  return () => {};
+}
+
+function tap() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Best <b id='qb'>none</b></span><button class='btn' id='qgo'>Start</button></div>
+    <button class='react' id='qa'>Press Start, then wait for green.</button>
+    <p class='hint'>Tap the box the moment it turns green.</p>
+  </div>`;
+  const box = document.getElementById('qa');
+  const qb = document.getElementById('qb');
+  const qgo = document.getElementById('qgo');
+  let state = 'idle', t0 = 0, best = null, timer;
+  const paint = (cls, text) => { box.className = 'react ' + cls; box.textContent = text; };
+  const start = () => {
+    clearTimeout(timer);
+    state = 'wait';
+    paint('wait', 'Wait for green...');
+    timer = setTimeout(() => { state = 'go'; t0 = performance.now(); paint('go', 'Tap now!'); }, 1500 + rand(3000));
+  };
+  box.onclick = () => {
+    if (state === 'wait') {
+      clearTimeout(timer);
+      state = 'idle';
+      paint('early', 'Too early! Press Start to retry.');
+    } else if (state === 'go') {
+      const ms = Math.round(performance.now() - t0);
+      state = 'idle';
+      if (best === null || ms < best) { best = ms; qb.textContent = ms + ' ms'; }
+      paint('', `${ms} ms. Press Start to go again.`);
+    }
+  };
+  qgo.onclick = () => { start(); qgo.blur(); };
+  return () => clearTimeout(timer);
+}
+
+function mines(N0 = 9, M0 = 10) {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Mines <b id='mn'>10</b></span><button class='btn' id='mfl'>Flag: off</button><button class='btn' id='mgo'>New game</button></div>
+    <div class='mines' id='mf'></div>
+    <p class='hint' id='mt'>Tap a square to open it. Turn Flag on, or right-click, to mark mines.</p>
+  </div>`;
+  const N = N0, M = M0;
+  const mf = document.getElementById('mf');
+  mf.style.gridTemplateColumns = `repeat(${N}, 1fr)`;
+  const mn = document.getElementById('mn');
+  const mt = document.getElementById('mt');
+  const fl = document.getElementById('mfl');
+  let cells, over, first, flagMode = false;
+  const around = i => {
+    const r = Math.floor(i / N), c = i % N, out = [];
+    for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) {
+      const rr = r + a, cc = c + b;
+      if ((a || b) && rr >= 0 && rr < N && cc >= 0 && cc < N) out.push(rr * N + cc);
+    }
+    return out;
+  };
+  const draw = () => {
+    mf.innerHTML = cells.map((c, i) => `<button class='mc${c.open ? ' open' : ''}${c.boom ? ' boom' : ''}' data-i='${i}' aria-label='Square ${i + 1}'>${c.open ? (c.mine ? '💣' : c.n || '') : c.flag ? '🚩' : ''}</button>`).join('');
+    mn.textContent = M - cells.filter(c => c.flag).length;
+  };
+  const newGame = () => {
+    cells = Array.from({ length: N * N }, () => ({ mine: false, open: false, flag: false, boom: false, n: 0 }));
+    over = false; first = true;
+    mt.textContent = 'Tap a square to open it. Turn Flag on, or right-click, to mark mines.';
+    draw();
+  };
+  const plant = safe => {
+    let k = 0;
+    while (k < M) {
+      const i = rand(N * N);
+      if (i !== safe && !cells[i].mine) { cells[i].mine = true; k++; }
+    }
+    cells.forEach((c, i) => { c.n = around(i).filter(j => cells[j].mine).length; });
+  };
+  const reveal = i => {
+    const stack = [i];
+    while (stack.length) {
+      const j = stack.pop(), c = cells[j];
+      if (c.open || c.flag) continue;
+      c.open = true;
+      if (!c.n) stack.push(...around(j));
+    }
+  };
+  mf.onclick = e => {
+    const b = e.target.closest('.mc');
+    if (!b || over) return;
+    const i = +b.dataset.i, c = cells[i];
+    if (flagMode) {
+      if (!c.open) c.flag = !c.flag;
+    } else {
+      if (c.open || c.flag) return;
+      if (first) { plant(i); first = false; }
+      if (c.mine) {
+        over = true; c.boom = true;
+        cells.forEach(x => { if (x.mine) x.open = true; });
+        mt.textContent = 'Boom! Press New game to try again.';
+      } else {
+        reveal(i);
+        if (cells.every(x => x.mine || x.open)) { over = true; mt.textContent = 'You cleared the field!'; }
+      }
+    }
+    draw();
+  };
+  mf.oncontextmenu = e => {
+    e.preventDefault();
+    const b = e.target.closest('.mc');
+    if (!b || over) return;
+    const c = cells[+b.dataset.i];
+    if (!c.open) { c.flag = !c.flag; draw(); }
+  };
+  fl.onclick = () => { flagMode = !flagMode; fl.textContent = 'Flag: ' + (flagMode ? 'on' : 'off'); fl.blur(); };
+  document.getElementById('mgo').onclick = e => { newGame(); e.currentTarget.blur(); };
+  newGame();
+  return () => {};
+}
+
+function words() {
+  const LIST = ['apple', 'brave', 'cloud', 'dream', 'eagle', 'flame', 'grape', 'house', 'input', 'jelly', 'knife', 'lemon', 'magic', 'night', 'ocean', 'piano', 'queen', 'river', 'smile', 'tiger', 'uncle', 'vivid', 'water', 'young', 'zebra', 'beach', 'candy', 'dance', 'earth', 'fresh', 'green', 'happy', 'light', 'money', 'north', 'pizza', 'quick', 'robot', 'sugar', 'train'];
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span id='wm'></span><button class='btn' id='wgo'>New word</button></div>
+    <div id='wb'></div>
+    <input class='inp' id='wi' maxlength='5' autocomplete='off' autocapitalize='off' spellcheck='false' placeholder='Type 5 letters, press Enter'>
+    <p class='hint'>Green: right spot. Yellow: wrong spot. Grey: not in the word. You get 6 tries.</p>
+  </div>`;
+  const wb = document.getElementById('wb');
+  const wm = document.getElementById('wm');
+  const wi = document.getElementById('wi');
+  let secret, rows;
+  const score = g => {
+    const res = Array(5).fill('x'), left = secret.split('');
+    for (let i = 0; i < 5; i++) if (g[i] === secret[i]) { res[i] = 'g'; left[i] = null; }
+    for (let i = 0; i < 5; i++) {
+      if (res[i] === 'g') continue;
+      const k = left.indexOf(g[i]);
+      if (k > -1) { res[i] = 'y'; left[k] = null; }
+    }
+    return res;
+  };
+  const draw = () => {
+    wb.innerHTML = Array.from({ length: 6 }, (_, r) => {
+      const row = rows[r];
+      return `<div class='wg'>` + Array.from({ length: 5 }, (_, c) => row ? `<div class='wl ${row.s[c]}'>${row.g[c]}</div>` : `<div class='wl'></div>`).join('') + `</div>`;
+    }).join('');
+  };
+  const newGame = () => {
+    secret = LIST[rand(LIST.length)];
+    rows = [];
+    wm.textContent = 'Guess the 5-letter word';
+    wi.value = '';
+    wi.disabled = false;
+    draw();
+  };
+  wi.onkeydown = e => {
+    if (e.key !== 'Enter') return;
+    const g = wi.value.toLowerCase().trim();
+    if (!/^[a-z]{5}$/.test(g)) { wm.textContent = 'Enter exactly 5 letters'; return; }
+    rows.push({ g, s: score(g) });
+    wi.value = '';
+    if (g === secret) { wm.textContent = 'You got it!'; wi.disabled = true; }
+    else if (rows.length === 6) { wm.textContent = 'The word was ' + secret.toUpperCase(); wi.disabled = true; }
+    else wm.textContent = (6 - rows.length) + ' tries left';
+    draw();
+  };
+  document.getElementById('wgo').onclick = e => { newGame(); e.currentTarget.blur(); };
+  newGame();
+  return () => {};
+}
+
+function slide9() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Moves <b id='sm'>0</b></span><button class='btn' id='sgo'>Shuffle</button></div>
+    <div class='board3' id='sb'></div>
+    <p class='hint' id='st'>Slide the tiles into order, 1 to 8.</p>
+  </div>`;
+  const sb = document.getElementById('sb');
+  const sm = document.getElementById('sm');
+  const st = document.getElementById('st');
+  let t, moves;
+  const adj = (i, j) => Math.abs(Math.floor(i / 3) - Math.floor(j / 3)) + Math.abs((i % 3) - (j % 3)) === 1;
+  const draw = () => {
+    sb.innerHTML = t.map((v, i) => `<button class='cell${v ? '' : ' empty'}' data-i='${i}' aria-label='${v ? 'Tile ' + v : 'Empty'}'>${v || ''}</button>`).join('');
+  };
+  const shuffle = () => {
+    t = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+    let z = 8, prev = -1;
+    for (let k = 0; k < 200; k++) {
+      const opts = [0, 1, 2, 3, 4, 5, 6, 7, 8].filter(i => adj(i, z) && i !== prev);
+      const n = opts[rand(opts.length)];
+      t[z] = t[n]; t[n] = 0; prev = z; z = n;
+    }
+    moves = 0;
+    sm.textContent = 0;
+    st.textContent = 'Slide the tiles into order, 1 to 8.';
+    draw();
+  };
+  sb.onclick = e => {
+    const c = e.target.closest('.cell');
+    if (!c) return;
+    const i = +c.dataset.i, z = t.indexOf(0);
+    if (!t[i] || !adj(i, z)) return;
+    t[z] = t[i]; t[i] = 0;
+    sm.textContent = ++moves;
+    if (t.every((v, k) => v === (k + 1) % 9)) st.textContent = `Solved in ${moves} moves!`;
+    draw();
+  };
+  document.getElementById('sgo').onclick = e => { shuffle(); e.currentTarget.blur(); };
+  shuffle();
+  return () => {};
+}
+
+function runner() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Score <b id='rs'>0</b></span><button class='btn' id='rgo'>Start</button></div>
+    <canvas id='rcv' class='cv' width='320' height='200' aria-label='Jump Runner board'></canvas>
+    <p class='hint'>Press Space, tap, or click to jump over the blocks.</p>
+  </div>`;
+  const cv = document.getElementById('rcv');
+  const ctx = cv.getContext('2d');
+  const rs = document.getElementById('rs');
+  const rgo = document.getElementById('rgo');
+  const W = 320, H = 200, G = 160;
+  let y, vy, obs, tick, state, raf;
+  const reset = () => { y = G; vy = 0; obs = []; tick = 0; state = 'ready'; rs.textContent = 0; };
+  const jump = () => {
+    if (state === 'ready') state = 'play';
+    if (state === 'play' && y >= G) vy = -9.5;
+  };
+  function step() {
+    tick++;
+    vy += 0.6;
+    y = Math.min(G, y + vy);
+    if (y >= G) vy = 0;
+    const speed = 3 + tick / 1200;
+    if (!obs.length || obs[obs.length - 1].x < W - 170 - rand(100)) obs.push({ x: W, w: 16 + rand(14), h: 18 + rand(22) });
+    obs.forEach(o => { o.x -= speed; });
+    obs = obs.filter(o => o.x > -40);
+    rs.textContent = Math.floor(tick / 6);
+    for (const o of obs) {
+      if (70 > o.x && 50 < o.x + o.w && y + 20 > 180 - o.h) { state = 'over'; rgo.textContent = 'Try again'; }
+    }
+  }
+  function draw() {
+    ctx.fillStyle = '#1d1b3a';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#5f5a7a';
+    ctx.fillRect(0, 180, W, 2);
+    ctx.fillStyle = '#ffb70a';
+    ctx.fillRect(50, y, 20, 20);
+    ctx.fillStyle = '#ff5d73';
+    obs.forEach(o => ctx.fillRect(o.x, 180 - o.h, o.w, o.h));
+    if (state !== 'play') {
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.font = '800 22px system-ui, sans-serif';
+      ctx.fillText(state === 'over' ? 'Crash!' : 'Ready?', W / 2, 70);
+      ctx.font = '600 15px system-ui, sans-serif';
+      ctx.fillText(state === 'over' ? 'Score ' + Math.floor(tick / 6) + '. Press Try again.' : 'Tap or press Space to start', W / 2, 98);
+    }
+  }
+  function loop() {
+    if (state === 'play') step();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+  const onKey = e => {
+    if (e.code === 'Space' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { e.preventDefault(); jump(); }
+  };
+  document.addEventListener('keydown', onKey);
+  cv.addEventListener('pointerdown', jump);
+  rgo.onclick = () => { reset(); rgo.textContent = 'Restart'; rgo.blur(); };
+  reset();
+  loop();
+  return () => { cancelAnimationFrame(raf); document.removeEventListener('keydown', onKey); };
+}
+
+function rush() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Next <b id='rn'>1</b></span><span><b id='rt'>0.0</b> s</span><button class='btn' id='rgo'>Start</button></div>
+    <div class='board' id='rb'></div>
+    <p class='hint' id='rm'>Press Start, then tap 1 to 16 in order as fast as you can.</p>
+  </div>`;
+  const rb = document.getElementById('rb');
+  const rn = document.getElementById('rn');
+  const rt = document.getElementById('rt');
+  const rm = document.getElementById('rm');
+  const rgo = document.getElementById('rgo');
+  let n = 1, t0 = 0, timer, running = false;
+  const deal = () => {
+    const a = Array.from({ length: 16 }, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+    rb.innerHTML = a.map(v => `<button class='tile' data-v='${v}'>${v}</button>`).join('');
+  };
+  rgo.onclick = () => {
+    clearInterval(timer);
+    deal();
+    n = 1; running = true; t0 = performance.now();
+    rn.textContent = 1;
+    rm.textContent = 'Go!';
+    rgo.textContent = 'Restart';
+    rgo.blur();
+    timer = setInterval(() => { rt.textContent = ((performance.now() - t0) / 1000).toFixed(1); }, 100);
+  };
+  rb.onclick = e => {
+    const b = e.target.closest('.tile');
+    if (!b || !running || +b.dataset.v !== n) return;
+    b.classList.add('done');
+    n++;
+    if (n > 16) {
+      running = false;
+      clearInterval(timer);
+      const s = ((performance.now() - t0) / 1000).toFixed(2);
+      rt.textContent = s;
+      rm.textContent = `Done in ${s} seconds!`;
+    } else {
+      rn.textContent = n;
+    }
+  };
+  deal();
+  return () => clearInterval(timer);
+}
+
+function typer() {
+  const LIST = ['sun', 'jump', 'cloud', 'pixel', 'arcade', 'rocket', 'banana', 'window', 'garden', 'planet', 'tiger', 'magic', 'river', 'candy', 'storm', 'light', 'happy', 'quick', 'brave', 'dream', 'ocean', 'smile', 'music', 'robot', 'pizza'];
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Score <b id='ts'>0</b></span><span>Time <b id='tt'>30</b></span><button class='btn' id='tgo'>Start</button></div>
+    <div class='big' id='tw'>Ready?</div>
+    <input class='inp' id='ti' autocomplete='off' autocapitalize='off' spellcheck='false' disabled placeholder='Type the word here'>
+    <p class='hint' id='tm'>Press Start. Each word advances as soon as you type it right.</p>
+  </div>`;
+  const ts = document.getElementById('ts');
+  const tt = document.getElementById('tt');
+  const tw = document.getElementById('tw');
+  const ti = document.getElementById('ti');
+  const tm = document.getElementById('tm');
+  const tgo = document.getElementById('tgo');
+  let score = 0, time = 30, word = '', timer, running = false;
+  const next = () => { word = LIST[rand(LIST.length)]; tw.textContent = word; ti.value = ''; };
+  tgo.onclick = () => {
+    clearInterval(timer);
+    score = 0; time = 30; running = true;
+    ts.textContent = 0; tt.textContent = 30;
+    ti.disabled = false; ti.focus();
+    next();
+    tm.textContent = 'Type fast!';
+    tgo.textContent = 'Restart';
+    timer = setInterval(() => {
+      tt.textContent = --time;
+      if (time <= 0) {
+        clearInterval(timer);
+        running = false;
+        ti.disabled = true;
+        tw.textContent = 'Time!';
+        tm.textContent = `You typed ${score} words.`;
+        tgo.textContent = 'Play again';
+      }
+    }, 1000);
+  };
+  ti.oninput = () => {
+    if (running && ti.value.trim().toLowerCase() === word) { ts.textContent = ++score; next(); }
+  };
+  return () => clearInterval(timer);
+}
+
+function lights() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Moves <b id='lm'>0</b></span><button class='btn' id='lgo'>New puzzle</button></div>
+    <div class='board5' id='lb'></div>
+    <p class='hint' id='lt'>Tap a lamp to flip it and its neighbors. Turn them all off.</p>
+  </div>`;
+  const lb = document.getElementById('lb');
+  const lm = document.getElementById('lm');
+  const lt = document.getElementById('lt');
+  let g, moves;
+  const flip = i => {
+    const r = Math.floor(i / 5), c = i % 5;
+    [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([a, b]) => {
+      const rr = r + a, cc = c + b;
+      if (rr >= 0 && rr < 5 && cc >= 0 && cc < 5) g[rr * 5 + cc] = !g[rr * 5 + cc];
+    });
+  };
+  const draw = () => {
+    lb.innerHTML = g.map((v, i) => `<button class='lamp${v ? ' on' : ''}' data-i='${i}' aria-label='Lamp ${i + 1}'></button>`).join('');
+  };
+  const newGame = () => {
+    g = Array(25).fill(false);
+    for (let k = 0; k < 12; k++) flip(rand(25));
+    if (!g.some(Boolean)) flip(12);
+    moves = 0;
+    lm.textContent = 0;
+    lt.textContent = 'Tap a lamp to flip it and its neighbors. Turn them all off.';
+    draw();
+  };
+  lb.onclick = e => {
+    const b = e.target.closest('.lamp');
+    if (!b) return;
+    flip(+b.dataset.i);
+    lm.textContent = ++moves;
+    if (!g.some(Boolean)) lt.textContent = `All lights off in ${moves} moves!`;
+    draw();
+  };
+  document.getElementById('lgo').onclick = e => { newGame(); e.currentTarget.blur(); };
+  newGame();
+  return () => {};
+}
+
+function rps() {
+  const E = ['✊', '✋', '✌️'], NAMES = ['Rock', 'Paper', 'Scissors'];
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>You <b id='ra'>0</b></span><span>CPU <b id='rc'>0</b></span><button class='btn' id='rr'>Reset</button></div>
+    <div class='big' id='rv'>Pick one</div>
+    <div class='pad' id='rp'>${E.map((e, i) => `<button data-m='${i}' aria-label='${NAMES[i]}'>${e}</button>`).join('')}</div>
+    <p class='hint' id='rh'>Rock beats scissors, scissors beat paper, paper beats rock.</p>
+  </div>`;
+  const ra = document.getElementById('ra');
+  const rc = document.getElementById('rc');
+  const rv = document.getElementById('rv');
+  const rh = document.getElementById('rh');
+  let a = 0, c = 0;
+  document.getElementById('rp').onclick = e => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    const m = +b.dataset.m, k = rand(3), r = (m - k + 3) % 3;
+    if (r === 1) ra.textContent = ++a;
+    else if (r === 2) rc.textContent = ++c;
+    rv.textContent = `${E[m]} vs ${E[k]}`;
+    rh.textContent = r === 0 ? 'Draw!' : r === 1 ? 'You win this round!' : 'The computer wins this round.';
+  };
+  document.getElementById('rr').onclick = () => {
+    a = 0; c = 0;
+    ra.textContent = 0; rc.textContent = 0;
+    rv.textContent = 'Pick one';
+    rh.textContent = 'Rock beats scissors, scissors beat paper, paper beats rock.';
+  };
+  return () => {};
+}
+
+function fruit() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Score <b id='cs'>0</b></span><span>Lives <b id='cl'>3</b></span><button class='btn' id='cgo'>Start</button></div>
+    <canvas id='ccv' class='cv' width='320' height='420' aria-label='Fruit Catch board'></canvas>
+    <p class='hint'>Move your mouse or finger, or use the arrow keys, to catch the fruit. Missing three ends the game.</p>
+  </div>`;
+  const cv = document.getElementById('ccv');
+  const ctx = cv.getContext('2d');
+  const cs = document.getElementById('cs');
+  const cl = document.getElementById('cl');
+  const cgo = document.getElementById('cgo');
+  const W = 320, H = 420, BW = 64, FRUITS = ['🍎', '🍌', '🍇', '🍓', '🍊'];
+  let bx, items, score, lives, state, tick, raf;
+  const reset = () => { bx = (W - BW) / 2; items = []; score = 0; lives = 3; state = 'ready'; tick = 0; cs.textContent = 0; cl.textContent = 3; };
+  const move = x => { bx = Math.max(0, Math.min(W - BW, x - BW / 2)); };
+  function step() {
+    if (state !== 'play') return;
+    tick++;
+    if (tick % 40 === 0) items.push({ x: 14 + rand(W - 28), y: -12, e: FRUITS[rand(5)], v: 2 + Math.min(4, score / 100) });
+    items.forEach(o => { o.y += o.v; });
+    items = items.filter(o => {
+      if (o.y > H - 34 && o.y < H - 10 && o.x > bx - 6 && o.x < bx + BW + 6) { score += 10; cs.textContent = score; return false; }
+      if (o.y > H + 10) {
+        lives--;
+        cl.textContent = lives;
+        if (lives <= 0) { state = 'over'; cgo.textContent = 'Try again'; }
+        return false;
+      }
+      return true;
+    });
+  }
+  function draw() {
+    ctx.fillStyle = '#1d1b3a';
+    ctx.fillRect(0, 0, W, H);
+    ctx.textAlign = 'center';
+    ctx.font = '26px sans-serif';
+    items.forEach(o => ctx.fillText(o.e, o.x, o.y));
+    ctx.fillStyle = '#2ec4b6';
+    ctx.fillRect(bx, H - 24, BW, 16);
+    if (state !== 'play') {
+      ctx.fillStyle = '#fff';
+      ctx.font = '800 24px system-ui, sans-serif';
+      ctx.fillText(state === 'over' ? 'Game over' : 'Ready?', W / 2, H / 2 - 20);
+      ctx.font = '600 16px system-ui, sans-serif';
+      ctx.fillText(state === 'over' ? 'Score ' + score + '. Press Try again.' : 'Press Start or tap the board', W / 2, H / 2 + 10);
+    }
+  }
+  function loop() {
+    step();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+  const follow = e => {
+    const r = cv.getBoundingClientRect();
+    move((e.clientX - r.left) * (W / r.width));
+  };
+  const onKey = e => {
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { e.preventDefault(); move(bx + BW / 2 - 18); }
+    else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { e.preventDefault(); move(bx + BW / 2 + 18); }
+  };
+  cv.addEventListener('pointermove', follow);
+  cv.addEventListener('pointerdown', e => { follow(e); if (state === 'ready') state = 'play'; });
+  document.addEventListener('keydown', onKey);
+  cgo.onclick = () => { reset(); state = 'play'; cgo.textContent = 'Restart'; cgo.blur(); };
+  reset();
+  loop();
+  return () => { cancelAnimationFrame(raf); document.removeEventListener('keydown', onKey); };
+}
+
+/* ===== Shared helpers and the game catalog ===== */
+const $ = id => document.getElementById(id);
+const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(x => x[1]);
+const pick = (a, n) => shuffle(a).slice(0, n);
+const P = s => s.split('|').map(x => x.split(':'));
+const CATALOG = [];
+const add = (id, name, icon, cat, desc, run) => CATALOG.push({ id, name, icon, cat, desc, run });
+
+/* ----- The original hand-built games ----- */
+add('snake', 'Snake Dash', '🐍', 'Arcade', 'Grow longer without running into yourself.', snake);
+add('glide', 'Glide', '🐦', 'Arcade', 'Tap or press Space to flap through the gaps.', glide);
+add('bricks', 'Brick Breaker', '🧱', 'Arcade', 'Bounce the ball and clear the wall.', bricks);
+add('pong', 'Pong', '🏓', 'Arcade', 'Rally against the CPU. First to five wins.', pong);
+add('runner', 'Jump Runner', '🏃', 'Arcade', 'Jump over the blocks and run as far as you can.', runner);
+add('fruit', 'Fruit Catch', '🍓', 'Arcade', 'Catch falling fruit in your basket.', fruit);
+add('memory', 'Memory Match', '🃏', 'Memory', 'Flip cards and find all eight pairs.', memory);
+add('echo', 'Color Echo', '🎨', 'Memory', 'Repeat the growing sequence of colors.', echo);
+add('whack', 'Mole Whack', '🔨', 'Reflex', 'Tap the moles before they hide. 30 seconds.', whack);
+add('tap', 'Quick Tap', '⚡', 'Reflex', 'Test your reaction time. Tap when the box turns green.', tap);
+add('rush', 'Number Rush', '⏱️', 'Reflex', 'Tap 1 to 16 in order against the clock.', rush);
+add('ttt', 'Tic-Tac-Toe', '❌', 'Casual', 'Play X against a computer that never misses.', ttt);
+add('connect', 'Four in a Row', '🔴', 'Casual', 'Connect four discs before the computer does.', connect);
+add('rps', 'Rock Paper Scissors', '✌️', 'Casual', 'Beat the computer, one hand at a time.', rps);
+add('merge', 'Merge Four', '🔢', 'Puzzle', 'Slide tiles and merge matching numbers to make 64.', merge);
+add('mines', 'Mine Finder', '💣', 'Puzzle', 'Clear the field without hitting a mine.', mines);
+add('mines-easy', 'Mine Finder Easy', '🚩', 'Puzzle', 'A small 6 by 6 field with only 5 mines.', () => mines(6, 5));
+add('mines-hard', 'Mine Finder Hard', '💥', 'Puzzle', 'A big 12 by 12 field with 28 mines.', () => mines(12, 28));
+add('slide', 'Slide Puzzle', '🧩', 'Puzzle', 'Slide the tiles into order, 1 to 8.', slide9);
+add('lights', 'Lights Out', '💡', 'Puzzle', 'Flip lamps until every light is off.', lights);
+add('words', 'Word Guess', '🔤', 'Word', 'Find the hidden five-letter word in six tries.', words);
+add('typer', 'Type Race', '⌨️', 'Word', 'Type as many words as you can in 30 seconds.', typer);
+
+/* ----- Quiz engine: 4 choices, 10 questions, data-driven ----- */
+function quiz(pairs, tpl) {
+  return () => {
+    const N = Math.min(10, pairs.length);
+    app.innerHTML = `
+    <div class='panel'>
+      <div class='hud'><span>Score <b id='qs'>0</b> / ${N}</span><button class='btn' id='qr'>Restart</button></div>
+      <div class='big' id='qq'></div><div class='opts' id='qo'></div><p class='hint' id='qm'></p>
+    </div>`;
+    const qq = $('qq'), qo = $('qo'), qm = $('qm'), qs = $('qs');
+    let deck, i, score, lock, timer;
+    const show = () => {
+      const [p, a] = deck[i];
+      qq.textContent = tpl.replace('{0}', p);
+      qq.style.fontSize = tpl === '{0}' && p.length <= 4 ? '3.2rem' : '1.4rem';
+      const wrong = shuffle([...new Set(pairs.map(x => x[1]))].filter(x => x !== a)).slice(0, 3);
+      qo.innerHTML = shuffle([a, ...wrong]).map(o => `<button class='opt'>${o}</button>`).join('');
+      qm.textContent = `Question ${i + 1} of ${N}`;
+      lock = false;
+    };
+    const start = () => { deck = pick(pairs, N); i = 0; score = 0; qs.textContent = 0; show(); };
+    qo.onclick = e => {
+      const b = e.target.closest('.opt');
+      if (!b || lock) return;
+      lock = true;
+      const a = deck[i][1];
+      if (b.textContent === a) { score++; qs.textContent = score; b.classList.add('ok'); }
+      else { b.classList.add('no'); [...qo.children].forEach(x => { if (x.textContent === a) x.classList.add('ok'); }); }
+      timer = setTimeout(() => {
+        i++;
+        if (i < N) show();
+        else { qq.style.fontSize = '1.6rem'; qq.textContent = score === N ? 'Perfect score!' : 'Finished!'; qo.innerHTML = ''; qm.textContent = `You got ${score} out of ${N}. Press Restart to play again.`; }
+      }, 900);
+    };
+    $('qr').onclick = () => { clearTimeout(timer); start(); };
+    start();
+    return () => clearTimeout(timer);
+  };
+}
+
+const QUIZZES = [
+  ['q-capitals', 'World Capitals', '🌍', 'Name the capital city of each country.', 'Capital of {0}?', 'France:Paris|Japan:Tokyo|Italy:Rome|Spain:Madrid|Germany:Berlin|Canada:Ottawa|Egypt:Cairo|Brazil:Brasília|Australia:Canberra|India:New Delhi|Kenya:Nairobi|Argentina:Buenos Aires|Thailand:Bangkok|Turkey:Ankara|Greece:Athens|Norway:Oslo|Peru:Lima|Portugal:Lisbon|Poland:Warsaw|Mexico:Mexico City|Nigeria:Abuja|Vietnam:Hanoi|Sweden:Stockholm|Ireland:Dublin'],
+  ['q-states', 'US State Capitals', '🗽', 'Match each US state to its capital.', 'Capital of {0}?', 'California:Sacramento|Texas:Austin|Florida:Tallahassee|New York:Albany|Illinois:Springfield|Washington:Olympia|Colorado:Denver|Arizona:Phoenix|Nevada:Carson City|Oregon:Salem|Ohio:Columbus|Georgia:Atlanta|Michigan:Lansing|Massachusetts:Boston|Pennsylvania:Harrisburg|Hawaii:Honolulu'],
+  ['q-continents', 'Continents', '🗺️', 'Which continent is each country in?', '{0} is in which continent?', 'Egypt:Africa|Japan:Asia|Brazil:South America|Canada:North America|Australia:Oceania|France:Europe|India:Asia|Kenya:Africa|Peru:South America|Mexico:North America|Italy:Europe|New Zealand:Oceania|China:Asia|Nigeria:Africa|Argentina:South America|Germany:Europe'],
+  ['q-landmarks', 'Famous Landmarks', '🗼', 'Which country is each landmark in?', '{0}: which country?', 'Eiffel Tower:France|Taj Mahal:India|Colosseum:Italy|Great Wall:China|Big Ben:United Kingdom|Pyramids of Giza:Egypt|Statue of Liberty:United States|Machu Picchu:Peru|Sydney Opera House:Australia|Christ the Redeemer:Brazil|Mount Fuji:Japan|Angkor Wat:Cambodia|Petra:Jordan|Acropolis:Greece|Burj Khalifa:United Arab Emirates|Neuschwanstein Castle:Germany'],
+  ['q-rivers', 'Famous Rivers', '🏞️', 'Match countries to their famous rivers.', 'Famous river in {0}?', 'Egypt:Nile|Brazil:Amazon|China:Yangtze|United States:Mississippi|Russia:Volga|Germany:Rhine|France:Seine|India:Ganges|England:Thames|Italy:Tiber|Czechia:Vltava|Pakistan:Indus'],
+  ['q-currency', 'Currencies', '💱', 'What money does each country use?', 'Currency of {0}?', 'Japan:Yen|United Kingdom:Pound|India:Rupee|Switzerland:Franc|Russia:Ruble|South Korea:Won|China:Yuan|Brazil:Real|Sweden:Krona|South Africa:Rand|Poland:Zloty|Turkey:Lira|Thailand:Baht|United States:Dollar|Mexico:Peso|Vietnam:Dong'],
+  ['q-codes', 'Country Codes', '🔠', 'Which country has this two-letter code?', 'Country code {0} belongs to?', 'FR:France|DE:Germany|JP:Japan|IT:Italy|ES:Spain|BR:Brazil|IN:India|CN:China|CA:Canada|AU:Australia|MX:Mexico|GB:United Kingdom|US:United States|ZA:South Africa|KR:South Korea|EG:Egypt'],
+  ['q-animals', 'Name That Animal', '🐶', 'Look at the emoji and pick the animal.', '{0}', '🐶:Dog|🐱:Cat|🐭:Mouse|🐰:Rabbit|🦊:Fox|🐻:Bear|🐼:Panda|🐨:Koala|🐯:Tiger|🦁:Lion|🐮:Cow|🐷:Pig|🐸:Frog|🐵:Monkey|🐔:Chicken|🐧:Penguin|🦉:Owl|🐢:Turtle|🐙:Octopus|🐬:Dolphin|🦒:Giraffe|🐘:Elephant'],
+  ['q-food', 'Name That Food', '🍕', 'Look at the emoji and pick the food.', '{0}', '🍎:Apple|🍌:Banana|🍇:Grapes|🍓:Strawberry|🍉:Watermelon|🍍:Pineapple|🍒:Cherries|🍑:Peach|🥕:Carrot|🌽:Corn|🍕:Pizza|🍔:Burger|🌮:Taco|🍩:Donut|🍪:Cookie|🍦:Ice cream'],
+  ['q-sports', 'Name That Sport', '🏅', 'Look at the ball or gear and name the sport.', '{0}', '⚽:Soccer|🏀:Basketball|🏈:Football|⚾:Baseball|🎾:Tennis|🏐:Volleyball|🏉:Rugby|🎱:Pool|🏓:Table tennis|🏸:Badminton|⛳:Golf|🥊:Boxing|🏒:Ice hockey|🎳:Bowling'],
+  ['q-vehicles', 'Name That Vehicle', '🚌', 'Look at the emoji and name the vehicle.', '{0}', '🚗:Car|🚌:Bus|🚲:Bicycle|✈️:Airplane|🚂:Train|🚢:Ship|🚁:Helicopter|🚀:Rocket|🚜:Tractor|🛵:Scooter|🚑:Ambulance|🚒:Fire truck|🚓:Police car|🏍️:Motorcycle|🚕:Taxi|🛶:Canoe'],
+  ['q-nature', 'Weather and Nature', '🌦️', 'Name the weather or nature emoji.', '{0}', '☀️:Sun|🌙:Moon|⭐:Star|☁️:Cloud|🌧️:Rain|⛈️:Thunderstorm|❄️:Snowflake|🌈:Rainbow|🌪️:Tornado|🔥:Fire|🌊:Wave|🌋:Volcano|🌵:Cactus|🌻:Sunflower|🍄:Mushroom|🌴:Palm tree'],
+  ['q-music', 'Musical Instruments', '🎸', 'Name the instrument or music gear.', '{0}', '🎸:Guitar|🎹:Piano|🎺:Trumpet|🎻:Violin|🥁:Drum|🎷:Saxophone|🎤:Microphone|🎧:Headphones|📻:Radio|🔔:Bell'],
+  ['q-solar', 'Solar System', '🌌', 'Test what you know about space.', '{0}', 'Largest planet:Jupiter|Closest to the Sun:Mercury|The Red Planet:Mars|Famous for its rings:Saturn|Hottest planet:Venus|Our home planet:Earth|Tilted on its side:Uranus|Farthest planet from the Sun:Neptune|Natural satellite of Earth:Moon|Our nearest star:Sun'],
+  ['q-science', 'Science Basics', '🔬', 'Ten-question science warm-up.', '{0}', 'Gas plants release:Oxygen|Gas plants absorb:Carbon dioxide|Hardest natural material:Diamond|Center of an atom:Nucleus|Force that pulls things down:Gravity|How plants make food:Photosynthesis|Study of living things:Biology|Study of rocks:Geology|Study of stars and space:Astronomy|Organ that pumps blood:Heart|Largest organ of the body:Skin|Water vapor turning to liquid:Condensation|Liquid turning to gas:Evaporation|Rock formed from lava:Igneous'],
+  ['q-elements', 'Chemical Symbols', '⚗️', 'Match symbols to chemical elements.', 'Symbol {0} is which element?', 'H:Hydrogen|He:Helium|O:Oxygen|C:Carbon|N:Nitrogen|Na:Sodium|Fe:Iron|Au:Gold|Ag:Silver|Cu:Copper|K:Potassium|Ca:Calcium|Cl:Chlorine|Pb:Lead|Hg:Mercury|Sn:Tin'],
+  ['q-shapes', 'Shape Names', '🔷', 'Name the shape from its description.', '{0}', '3 sides:Triangle|4 equal sides and 4 right angles:Square|4 right angles, 2 long and 2 short sides:Rectangle|5 sides:Pentagon|6 sides:Hexagon|7 sides:Heptagon|8 sides:Octagon|10 sides:Decagon|Round with no corners:Circle|A stretched circle:Ellipse'],
+  ['q-roman', 'Roman Numerals', '🏛️', 'Turn Roman numerals into numbers.', 'What number is {0}?', 'IV:4|IX:9|XII:12|XIV:14|XVIII:18|XX:20|XXIV:24|XL:40|L:50|LX:60|XC:90|C:100|CD:400|D:500|CM:900|M:1000'],
+  ['q-calendar', 'Months of the Year', '📅', 'Name each month by its number.', '{0}', '1st month:January|2nd month:February|3rd month:March|4th month:April|5th month:May|6th month:June|7th month:July|8th month:August|9th month:September|10th month:October|11th month:November|12th month:December'],
+  ['q-opposites', 'Opposites', '↔️', 'Pick the opposite word.', 'Opposite of {0}?', 'Hot:Cold|Up:Down|Big:Small|Fast:Slow|Happy:Sad|Day:Night|Open:Closed|Full:Empty|Hard:Soft|Early:Late|Old:New|Rich:Poor|Light:Dark|Strong:Weak|Near:Far|Wet:Dry'],
+  ['q-spanish', 'Spanish Words', '💃', 'Learn everyday Spanish words.', 'Say "{0}" in Spanish', 'Hello:Hola|Thank you:Gracias|Water:Agua|House:Casa|Dog:Perro|Cat:Gato|Red:Rojo|Blue:Azul|Friend:Amigo|Book:Libro|Milk:Leche|Sun:Sol|Moon:Luna|Bread:Pan|Yes:Sí|Good night:Buenas noches'],
+  ['q-french', 'French Words', '🥖', 'Learn everyday French words.', 'Say "{0}" in French', 'Hello:Bonjour|Thank you:Merci|Water:Eau|House:Maison|Dog:Chien|Cat:Chat|Red:Rouge|Blue:Bleu|Friend:Ami|Book:Livre|Milk:Lait|Bread:Pain|Yes:Oui|Goodbye:Au revoir|Apple:Pomme|Cheese:Fromage'],
+  ['q-german', 'German Words', '🥨', 'Learn everyday German words.', 'Say "{0}" in German', 'Hello:Hallo|Thank you:Danke|Water:Wasser|House:Haus|Dog:Hund|Cat:Katze|Red:Rot|Blue:Blau|Friend:Freund|Book:Buch|Milk:Milch|Bread:Brot|Yes:Ja|Goodbye:Tschüss|Apple:Apfel|Cheese:Käse'],
+  ['q-italian', 'Italian Words', '🍝', 'Learn everyday Italian words.', 'Say "{0}" in Italian', 'Hello:Ciao|Thank you:Grazie|Water:Acqua|House:Casa|Dog:Cane|Cat:Gatto|Bread:Pane|Milk:Latte|Friend:Amico|Book:Libro|Yes:Sì|Good night:Buonanotte|Cheese:Formaggio|Sun:Sole|Moon:Luna|Apple:Mela'],
+  ['q-japanese', 'Japanese Words', '🎌', 'Learn everyday Japanese words in romaji.', 'Say "{0}" in Japanese', 'Hello:Konnichiwa|Thank you:Arigatō|Water:Mizu|Cat:Neko|Dog:Inu|Yes:Hai|No:Iie|Good morning:Ohayō|Goodbye:Sayōnara|Fish:Sakana|Mountain:Yama|Tree:Ki|Moon:Tsuki|Sun:Taiyō|Rice:Gohan|Friend:Tomodachi'],
+  ['q-tech', 'Tech Basics', '💻', 'How well do you know computers?', '{0}', 'Brain of the computer:CPU|Short-term memory:RAM|Used to browse the web:Browser|Language of web pages:HTML|Styles a web page:CSS|Makes pages interactive:JavaScript|Pointing device:Mouse|Typing device:Keyboard|Stores files long term:Hard drive|Unwanted email:Spam'],
+  ['q-art', 'Famous Paintings', '🖼️', 'Match paintings to their painters.', 'Who painted {0}?', 'Mona Lisa:Leonardo da Vinci|Starry Night:Van Gogh|The Scream:Edvard Munch|Guernica:Pablo Picasso|The Persistence of Memory:Salvador Dalí|Water Lilies:Claude Monet|The Night Watch:Rembrandt|The Kiss:Gustav Klimt|Girl with a Pearl Earring:Vermeer|The Birth of Venus:Botticelli'],
+  ['q-books', 'Book Authors', '📚', 'Match books to their authors.', 'Who wrote {0}?', 'Romeo and Juliet:William Shakespeare|Pride and Prejudice:Jane Austen|Oliver Twist:Charles Dickens|The Hobbit:J.R.R. Tolkien|1984:George Orwell|Harry Potter:J.K. Rowling|The Little Prince:Antoine de Saint-Exupéry|Don Quixote:Miguel de Cervantes|Moby-Dick:Herman Melville|Hamlet:William Shakespeare']
+];
+QUIZZES.forEach(([id, name, icon, desc, tpl, data]) => add(id, name, icon, 'Quiz', desc, quiz(P(data), tpl)));
+
+/* ----- Memory themes reuse the Memory Match engine ----- */
+[
+  ['mem-animals', 'Animal Pairs', '🐶', ['🐶', '🐱', '🐭', '🐰', '🦊', '🐻', '🐼', '🐨']],
+  ['mem-ocean', 'Ocean Pairs', '🐙', ['🐙', '🦀', '🐠', '🐬', '🐳', '🦈', '🐢', '🦑']],
+  ['mem-farm', 'Farm Pairs', '🐮', ['🐮', '🐷', '🐑', '🐔', '🐴', '🦆', '🐐', '🐇']],
+  ['mem-fruit', 'Fruit Pairs', '🍓', ['🍎', '🍌', '🍇', '🍓', '🍉', '🍍', '🍒', '🍑']],
+  ['mem-treats', 'Sweet Treats', '🍩', ['🍩', '🍪', '🍦', '🍰', '🍫', '🍭', '🍿', '🥧']],
+  ['mem-sports', 'Sports Pairs', '⚽', ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏓', '🏸']],
+  ['mem-vehicles', 'Vehicle Pairs', '🚗', ['🚗', '🚌', '🚲', '✈️', '🚂', '🚢', '🚁', '🚀']],
+  ['mem-space', 'Space Pairs', '👽', ['🌍', '🌙', '⭐', '🚀', '🛰️', '👽', '☄️', '🌞']],
+  ['mem-weather', 'Weather Pairs', '🌈', ['☀️', '🌙', '⭐', '☁️', '🌧️', '❄️', '🌈', '🔥']],
+  ['mem-faces', 'Face Pairs', '😎', ['😀', '😎', '😍', '😴', '🤔', '😂', '😡', '😱']],
+  ['mem-music', 'Music Pairs', '🎷', ['🎸', '🎹', '🎺', '🎻', '🥁', '🎷', '🎤', '🎧']],
+  ['mem-plants', 'Plant Pairs', '🌻', ['🌵', '🌻', '🌴', '🍄', '🌹', '🌲', '🍀', '🌷']],
+  ['mem-spooky', 'Spooky Pairs', '🎃', ['🎃', '👻', '💀', '🦇', '🕷️', '🕸️', '🧙', '🍬']]
+].forEach(([id, name, icon, set]) => add(id, name, icon, 'Memory', 'Match all eight pairs of ' + name.split(' ')[0].toLowerCase() + ' cards.', () => memory(set)));
+
+/* ----- Math sprint engine: 30 seconds, 4 choices ----- */
+function sprint(gen) {
+  return () => {
+    app.innerHTML = `
+    <div class='panel'>
+      <div class='hud'><span>Score <b id='ps'>0</b></span><span>Time <b id='pt'>30</b></span><button class='btn' id='pg'>Start</button></div>
+      <div class='big' id='pq'>Ready?</div><div class='opts' id='po'></div>
+      <p class='hint' id='pm'>Press Start. Answer as many as you can in 30 seconds. Wrong answers cost a point.</p>
+    </div>`;
+    const ps = $('ps'), pt = $('pt'), pq = $('pq'), po = $('po'), pm = $('pm'), pg = $('pg');
+    let cur, score = 0, time = 30, running = false, timer;
+    const next = () => {
+      cur = gen();
+      let opts = cur.o;
+      if (!opts) {
+        const s = new Set([cur.a]);
+        while (s.size < 4) { const d = cur.a + rand(11) - 5; if (d >= 0) s.add(d); }
+        opts = shuffle([...s]);
+      }
+      pq.textContent = cur.q;
+      po.innerHTML = opts.map(o => `<button class='opt'>${o}</button>`).join('');
+    };
+    po.onclick = e => {
+      const b = e.target.closest('.opt');
+      if (!b || !running) return;
+      score = Math.max(0, score + (b.textContent === String(cur.a) ? 1 : -1));
+      ps.textContent = score;
+      next();
+    };
+    pg.onclick = () => {
+      clearInterval(timer);
+      score = 0; time = 30; running = true;
+      ps.textContent = 0; pt.textContent = 30;
+      pm.textContent = 'Go!';
+      pg.textContent = 'Restart';
+      next();
+      timer = setInterval(() => {
+        pt.textContent = --time;
+        if (time <= 0) {
+          clearInterval(timer);
+          running = false;
+          po.innerHTML = '';
+          pq.textContent = 'Time!';
+          pm.textContent = 'Final score: ' + score;
+          pg.textContent = 'Play again';
+        }
+      }, 1000);
+    };
+    return () => clearInterval(timer);
+  };
+}
+
+[
+  ['m-add', 'Addition Sprint', '➕', 'Add fast before the 30 seconds run out.', () => { const a = 1 + rand(30), b = 1 + rand(30); return { q: `${a} + ${b}`, a: a + b }; }],
+  ['m-sub', 'Subtraction Sprint', '➖', 'Subtract fast before time runs out.', () => { const a = 5 + rand(40), b = rand(a + 1); return { q: `${a} - ${b}`, a: a - b }; }],
+  ['m-times', 'Times Tables', '✖️', 'Multiply numbers up to 12.', () => { const a = 2 + rand(11), b = 2 + rand(11); return { q: `${a} × ${b}`, a: a * b }; }],
+  ['m-div', 'Division Dash', '➗', 'Divide with whole-number answers.', () => { const b = 2 + rand(11), c = 2 + rand(11); return { q: `${b * c} ÷ ${b}`, a: c }; }],
+  ['m-squares', 'Square Numbers', '🔲', 'Find the square of each number.', () => { const n = 2 + rand(14); return { q: `${n}²`, a: n * n }; }],
+  ['m-evenodd', 'Even or Odd', '🎲', 'Is the number even or odd? Be quick.', () => { const n = rand(200); return { q: String(n), a: n % 2 ? 'Odd' : 'Even', o: ['Even', 'Odd'] }; }],
+  ['m-bigger', 'Bigger Number', '🔝', 'Tap the larger of two numbers.', () => { const a = 1 + rand(99); let b = 1 + rand(99); while (b === a) b = 1 + rand(99); return { q: `${a} or ${b}?`, a: Math.max(a, b), o: [a, b] }; }],
+  ['m-seq', 'Number Patterns', '🔢', 'Find the next number in the pattern.', () => { const s = 1 + rand(10), d = 2 + rand(6); return { q: [0, 1, 2, 3].map(i => s + i * d).join(', ') + ', ?', a: s + 4 * d }; }],
+  ['m-double', 'Double It', '2️⃣', 'Double each number as fast as you can.', () => { const n = 2 + rand(60); return { q: `Double ${n}`, a: n * 2 }; }],
+  ['m-mix', 'Mental Math Mix', '🧠', 'Adding, subtracting, and multiplying mixed together.', () => { const t = rand(3), a = 2 + rand(12), b = 2 + rand(12); return t === 0 ? { q: `${a} + ${b}`, a: a + b } : t === 1 ? { q: `${a + b} - ${b}`, a } : { q: `${a} × ${b}`, a: a * b }; }],
+  ['m-percent', 'Quick Percents', '💯', 'Find 10%, 25%, or 50% of a number.', () => { const p = [10, 25, 50][rand(3)], n = 20 * (1 + rand(10)); return { q: `${p}% of ${n}`, a: n * p / 100 }; }],
+  ['m-missing', 'Missing Number', '❓', 'Work out the missing number.', () => { const a = 1 + rand(30), b = 1 + rand(30); return { q: `${a} + ? = ${a + b}`, a: b }; }],
+  ['m-round', 'Round to Ten', '🎯', 'Round each number to the nearest ten.', () => { const n = 11 + rand(89), a = Math.round(n / 10) * 10; return { q: `Round ${n} to the nearest ten`, a, o: shuffle([a - 10, a, a + 10, a + 20]) }; }]
+].forEach(([id, name, icon, desc, gen]) => add(id, name, icon, 'Math', desc, sprint(gen)));
+
+/* ----- Tap games reuse the Mole Whack engine with new emoji and speeds ----- */
+[
+  ['whack-pizza', 'Pizza Party', '🍕', 'Slow and easy. Tap the pizza slices.', '🍕', 900],
+  ['whack-bug', 'Bug Squash', '🐛', 'Squash the bugs before they crawl away.', '🐛', 750],
+  ['whack-balloon', 'Balloon Pop', '🎈', 'Pop the balloons as they appear.', '🎈', 650],
+  ['whack-star', 'Star Catcher', '⭐', 'Catch the stars as they flash.', '⭐', 600],
+  ['whack-ghost', 'Ghost Hunt', '👻', 'Busting ghosts at a fast pace.', '👻', 550],
+  ['whack-treasure', 'Treasure Grab', '💰', 'The fastest one. Grab the treasure!', '💰', 480]
+].forEach(([id, name, icon, desc, emoji, ms]) => add(id, name, icon, 'Reflex', desc, () => whack(emoji, ms)));
+
+/* ----- Word lists shared by Hangman and Word Scramble ----- */
+const WL = {
+  animals: ['elephant', 'giraffe', 'penguin', 'dolphin', 'kangaroo', 'monkey', 'rabbit', 'turtle', 'tiger', 'zebra', 'panda', 'koala', 'octopus', 'lizard'],
+  fruits: ['banana', 'orange', 'mango', 'cherry', 'grapes', 'lemon', 'peach', 'melon', 'papaya', 'apple', 'pear', 'plum', 'kiwi', 'coconut'],
+  countries: ['canada', 'brazil', 'japan', 'egypt', 'france', 'india', 'kenya', 'mexico', 'norway', 'turkey', 'spain', 'italy', 'china', 'peru'],
+  space: ['planet', 'comet', 'galaxy', 'rocket', 'meteor', 'orbit', 'saturn', 'nebula', 'eclipse', 'asteroid', 'jupiter', 'satellite', 'telescope', 'astronaut'],
+  sports: ['soccer', 'tennis', 'hockey', 'rugby', 'boxing', 'cricket', 'archery', 'diving', 'cycling', 'skating', 'surfing', 'bowling', 'karate', 'rowing'],
+  jobs: ['doctor', 'teacher', 'farmer', 'pilot', 'chef', 'artist', 'nurse', 'driver', 'dentist', 'plumber', 'singer', 'baker', 'writer', 'engineer']
+};
+const WTHEMES = [['animals', 'Animals', '🐘'], ['fruits', 'Fruits', '🍌'], ['countries', 'Countries', '🌎'], ['space', 'Space', '🚀'], ['sports', 'Sports', '🏆'], ['jobs', 'Jobs', '👷']];
+
+function hang(list) {
+  return () => {
+    app.innerHTML = `
+    <div class='panel'>
+      <div class='hud'><span>Lives <b id='hl'>6</b></span><button class='btn' id='hr'>New word</button></div>
+      <div class='big' id='hw'></div><div class='keys' id='hk'></div><p class='hint' id='hm'></p>
+    </div>`;
+    const hk = $('hk'), hm = $('hm');
+    let w, got, lives, over;
+    const draw = () => {
+      $('hw').textContent = [...w].map(c => got.has(c) ? c : '_').join(' ').toUpperCase();
+      $('hl').textContent = lives;
+      hk.innerHTML = 'abcdefghijklmnopqrstuvwxyz'.split('').map(c => `<button class='key' data-c='${c}'${got.has(c) || over ? ' disabled' : ''}>${c}</button>`).join('');
+    };
+    const guess = c => {
+      if (over || got.has(c)) return;
+      got.add(c);
+      if (!w.includes(c)) lives--;
+      if ([...w].every(x => got.has(x))) { over = true; hm.textContent = 'You won!'; }
+      else if (lives <= 0) { over = true; hm.textContent = 'Out of lives. The word was ' + w.toUpperCase(); }
+      draw();
+    };
+    const start = () => { w = list[rand(list.length)]; got = new Set(); lives = 6; over = false; hm.textContent = 'Click or type letters to guess.'; draw(); };
+    hk.onclick = e => { const b = e.target.closest('.key'); if (b) guess(b.dataset.c); };
+    const onKey = e => { if (/^[a-z]$/i.test(e.key) && !e.ctrlKey && !e.metaKey) guess(e.key.toLowerCase()); };
+    document.addEventListener('keydown', onKey);
+    $('hr').onclick = e => { start(); e.currentTarget.blur(); };
+    start();
+    return () => document.removeEventListener('keydown', onKey);
+  };
+}
+
+function scramble(list) {
+  return () => {
+    app.innerHTML = `
+    <div class='panel'>
+      <div class='hud'><span>Score <b id='zs'>0</b></span><button class='btn' id='zn'>Skip</button></div>
+      <div class='big' id='zw'></div>
+      <input class='inp' id='zi' autocomplete='off' autocapitalize='off' spellcheck='false' placeholder='Type the word'>
+      <p class='hint' id='zm'>Unscramble the letters. It checks as you type.</p>
+    </div>`;
+    let w, score = 0;
+    const next = () => {
+      w = list[rand(list.length)];
+      let s;
+      do { s = shuffle([...w]).join(''); } while (s === w);
+      $('zw').textContent = s.toUpperCase();
+      $('zi').value = '';
+    };
+    $('zi').oninput = () => {
+      if ($('zi').value.trim().toLowerCase() === w) { $('zs').textContent = ++score; $('zm').textContent = 'Correct!'; next(); }
+    };
+    $('zn').onclick = () => { $('zm').textContent = 'It was ' + w.toUpperCase(); next(); };
+    next();
+    return () => {};
+  };
+}
+
+WTHEMES.forEach(([k, label, icon]) => add('hang-' + k, 'Hangman: ' + label, icon, 'Word', 'Guess the hidden ' + label.toLowerCase() + ' word letter by letter.', hang(WL[k])));
+WTHEMES.forEach(([k, label, icon]) => add('scramble-' + k, 'Scramble: ' + label, icon, 'Word', 'Unscramble the mixed-up ' + label.toLowerCase() + ' words.', scramble(WL[k])));
+
+/* ===== More original games ===== */
+function guessNum() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Tries <b id='gt'>0</b></span><button class='btn' id='gr'>New game</button></div>
+    <div class='big' id='gm'>I picked 1 to 100</div>
+    <input class='inp' id='gi' inputmode='numeric' autocomplete='off' placeholder='Your guess'>
+    <button class='btn' id='gb' style='margin-top:10px;width:100%'>Guess</button>
+  </div>`;
+  let n, tries;
+  const go = () => {
+    const v = parseInt($('gi').value, 10);
+    if (!v || v < 1 || v > 100) { $('gm').textContent = 'Pick 1 to 100'; return; }
+    $('gt').textContent = ++tries;
+    $('gm').textContent = v === n ? `Yes! It was ${n}` : v < n ? 'Higher' : 'Lower';
+    $('gi').value = '';
+  };
+  const start = () => { n = 1 + rand(100); tries = 0; $('gt').textContent = 0; $('gm').textContent = 'I picked 1 to 100'; $('gi').value = ''; };
+  $('gb').onclick = go;
+  $('gi').onkeydown = e => { if (e.key === 'Enter') go(); };
+  $('gr').onclick = start;
+  start();
+  return () => {};
+}
+
+function coin() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Streak <b id='cs'>0</b></span><span>Best <b id='cb'>0</b></span></div>
+    <div class='big' id='cc'>Call it!</div>
+    <div class='opts' id='co'><button class='opt' data-s='Heads'>Heads</button><button class='opt' data-s='Tails'>Tails</button></div>
+    <p class='hint' id='cm'>Guess right to build a streak.</p>
+  </div>`;
+  let s = 0, b = 0;
+  $('co').onclick = e => {
+    const o = e.target.closest('.opt');
+    if (!o) return;
+    const r = Math.random() < 0.5 ? 'Heads' : 'Tails';
+    if (o.dataset.s === r) { s++; b = Math.max(b, s); $('cm').textContent = 'Right!'; }
+    else { s = 0; $('cm').textContent = 'Wrong. Streak reset.'; }
+    $('cc').textContent = r;
+    $('cs').textContent = s;
+    $('cb').textContent = b;
+  };
+  return () => {};
+}
+
+function dice() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>You <b id='da'>0</b></span><span>CPU <b id='db'>0</b></span><button class='btn' id='dr'>Roll</button></div>
+    <div class='big' id='dd'>Roll to start</div>
+    <p class='hint' id='dm'>The higher total of two dice wins the round. First to 5 wins.</p>
+  </div>`;
+  let a = 0, b = 0;
+  const F = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+  $('dr').onclick = () => {
+    if (a >= 5 || b >= 5) { a = 0; b = 0; }
+    const x = rand(6), y = rand(6), p = rand(6), q = rand(6), me = x + y + 2, cpu = p + q + 2;
+    if (me > cpu) a++; else if (cpu > me) b++;
+    $('da').textContent = a;
+    $('db').textContent = b;
+    $('dd').textContent = `${F[x]}${F[y]} vs ${F[p]}${F[q]}`;
+    $('dm').textContent = `${me} vs ${cpu}. ` + (a >= 5 ? 'You win the match! Roll to play again.' : b >= 5 ? 'The CPU wins the match. Roll to play again.' : me > cpu ? 'You win the round.' : cpu > me ? 'The CPU wins the round.' : 'Tie.');
+  };
+  return () => {};
+}
+
+function stroop() {
+  const C = [['Red', '#ff5d73'], ['Blue', '#4d96ff'], ['Green', '#2ec4b6'], ['Yellow', '#ffb70a']];
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Score <b id='ss'>0</b></span><span>Time <b id='sk'>30</b></span><button class='btn' id='sg'>Start</button></div>
+    <div class='big' id='sw'>Ready?</div><div class='opts' id='so'></div>
+    <p class='hint' id='sm'>Tap the COLOR of the word, not what the word says.</p>
+  </div>`;
+  let ink, score = 0, time = 30, running = false, timer;
+  const next = () => {
+    const w = C[rand(4)];
+    ink = C[rand(4)];
+    $('sw').textContent = w[0].toUpperCase();
+    $('sw').style.color = ink[1];
+    $('so').innerHTML = C.map(c => `<button class='opt'>${c[0]}</button>`).join('');
+  };
+  $('so').onclick = e => {
+    const b = e.target.closest('.opt');
+    if (!b || !running) return;
+    score = Math.max(0, score + (b.textContent === ink[0] ? 1 : -1));
+    $('ss').textContent = score;
+    next();
+  };
+  $('sg').onclick = () => {
+    clearInterval(timer);
+    score = 0; time = 30; running = true;
+    $('ss').textContent = 0;
+    $('sk').textContent = 30;
+    $('sg').textContent = 'Restart';
+    next();
+    timer = setInterval(() => {
+      $('sk').textContent = --time;
+      if (time <= 0) {
+        clearInterval(timer);
+        running = false;
+        $('sw').textContent = 'Time!';
+        $('sw').style.color = '';
+        $('so').innerHTML = '';
+        $('sm').textContent = 'Final score: ' + score;
+        $('sg').textContent = 'Play again';
+      }
+    }, 1000);
+  };
+  return () => clearInterval(timer);
+}
+
+function odd() {
+  const PAIRS = [['😀', '😃'], ['🙂', '🙃'], ['🐶', '🐕'], ['🌕', '🌖'], ['🍎', '🍏'], ['🚗', '🚙'], ['🔔', '🔕'], ['⭐', '🌟'], ['🐱', '🐈']];
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Score <b id='os'>0</b></span><span>Time <b id='ot'>30</b></span><button class='btn' id='og'>Start</button></div>
+    <div class='board' id='ob'></div>
+    <p class='hint' id='om'>Press Start, then find the one emoji that is different.</p>
+  </div>`;
+  let score = 0, time = 30, running = false, timer, n;
+  const deal = () => {
+    const [a, b] = shuffle(PAIRS[rand(PAIRS.length)]);
+    n = rand(16);
+    $('ob').innerHTML = Array.from({ length: 16 }, (_, i) => `<button class='tile' data-i='${i}'>${i === n ? b : a}</button>`).join('');
+  };
+  $('ob').onclick = e => {
+    const b = e.target.closest('.tile');
+    if (!b || !running) return;
+    score = Math.max(0, score + (+b.dataset.i === n ? 1 : -1));
+    $('os').textContent = score;
+    deal();
+  };
+  $('og').onclick = () => {
+    clearInterval(timer);
+    score = 0; time = 30; running = true;
+    $('os').textContent = 0;
+    $('ot').textContent = 30;
+    $('om').textContent = 'Find the odd one out!';
+    $('og').textContent = 'Restart';
+    deal();
+    timer = setInterval(() => {
+      $('ot').textContent = --time;
+      if (time <= 0) { clearInterval(timer); running = false; $('ob').innerHTML = ''; $('om').textContent = 'Time! Final score: ' + score; $('og').textContent = 'Play again'; }
+    }, 1000);
+  };
+  return () => clearInterval(timer);
+}
+
+function digits() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Level <b id='dl'>1</b></span><button class='btn' id='dg'>Start</button></div>
+    <div class='big' id='dn'>Ready?</div>
+    <input class='inp' id='di' inputmode='numeric' autocomplete='off' placeholder='Type the number' disabled>
+    <p class='hint' id='dm'>Remember the digits, then type them and press Enter.</p>
+  </div>`;
+  let level = 1, code = '', timer;
+  const gen = () => { let s = String(1 + rand(9)); while (s.length < level + 2) s += rand(10); return s; };
+  const round = () => {
+    clearTimeout(timer);
+    code = gen();
+    $('dn').textContent = code;
+    $('di').value = '';
+    $('di').disabled = true;
+    $('dl').textContent = level;
+    $('dm').textContent = 'Memorize it...';
+    timer = setTimeout(() => {
+      $('dn').textContent = '?';
+      $('di').disabled = false;
+      $('di').focus();
+      $('dm').textContent = 'Type it and press Enter.';
+    }, 1000 + level * 400);
+  };
+  $('di').onkeydown = e => {
+    if (e.key !== 'Enter' || $('di').disabled) return;
+    if ($('di').value.trim() === code) { level++; round(); }
+    else { $('dm').textContent = `Wrong. It was ${code}. You reached level ${level}.`; $('di').disabled = true; $('dg').textContent = 'Try again'; }
+  };
+  $('dg').onclick = () => { level = 1; $('dg').textContent = 'Restart'; round(); };
+  return () => clearTimeout(timer);
+}
+
+function clicks() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Clicks <b id='kc'>0</b></span><span>Time <b id='kt'>10.0</b></span></div>
+    <button class='react' id='kb'>Click here to start</button>
+    <p class='hint' id='km'>Click or tap as fast as you can for 10 seconds.</p>
+  </div>`;
+  let n = 0, t0 = 0, timer, running = false;
+  $('kb').onclick = () => {
+    if (!running) {
+      n = 0; running = true; t0 = performance.now();
+      $('km').textContent = 'Go!';
+      timer = setInterval(() => {
+        const left = 10 - (performance.now() - t0) / 1000;
+        if (left <= 0) {
+          clearInterval(timer);
+          running = false;
+          $('kt').textContent = '0.0';
+          $('kb').textContent = 'Click to try again';
+          $('km').textContent = `${n} clicks: ${(n / 10).toFixed(1)} per second.`;
+        } else {
+          $('kt').textContent = left.toFixed(1);
+        }
+      }, 50);
+    }
+    n++;
+    $('kc').textContent = n;
+    if (running) $('kb').textContent = 'Keep clicking!';
+  };
+  return () => clearInterval(timer);
+}
+
+function aim() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Hits <b id='ah'>0</b>/20</span><span><b id='at'>0.0</b> s</span><button class='btn' id='ag'>Start</button></div>
+    <div id='ar' style='position:relative;height:300px;border-radius:14px;background:#1d1b3a;overflow:hidden'></div>
+    <p class='hint' id='am'>Press Start, then click each target as fast as you can.</p>
+  </div>`;
+  let hits = 0, t0 = 0, timer, running = false;
+  const place = () => {
+    $('ar').innerHTML = `<button id='tg' aria-label='Target' style='position:absolute;width:44px;height:44px;border:0;border-radius:50%;background:#ff5d73;cursor:pointer;touch-action:manipulation;left:${rand(85)}%;top:${rand(85)}%'></button>`;
+  };
+  $('ar').onclick = e => {
+    if (!running || !e.target.closest('#tg')) return;
+    hits++;
+    $('ah').textContent = hits;
+    if (hits >= 20) {
+      running = false;
+      clearInterval(timer);
+      $('ar').innerHTML = '';
+      $('am').textContent = `20 targets in ${((performance.now() - t0) / 1000).toFixed(2)} seconds!`;
+      $('ag').textContent = 'Play again';
+    } else place();
+  };
+  $('ag').onclick = () => {
+    clearInterval(timer);
+    hits = 0; running = true; t0 = performance.now();
+    $('ah').textContent = 0;
+    $('ag').textContent = 'Restart';
+    $('am').textContent = 'Go!';
+    place();
+    timer = setInterval(() => { $('at').textContent = ((performance.now() - t0) / 1000).toFixed(1); }, 100);
+  };
+  return () => clearInterval(timer);
+}
+
+function dodge() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Score <b id='ds'>0</b></span><button class='btn' id='dg'>Start</button></div>
+    <canvas id='dcv' class='cv' width='320' height='420' aria-label='Dodge game board'></canvas>
+    <p class='hint'>Move with your mouse, finger, or arrow keys. Click, tap, or press Space to start. Avoid the red blocks.</p>
+  </div>`;
+  const cv = $('dcv'), ctx = cv.getContext('2d');
+  const W = 320, H = 420, PW = 36;
+  let px, blocks, tick, state, raf;
+  const reset = () => { px = W / 2 - PW / 2; blocks = []; tick = 0; state = 'ready'; $('ds').textContent = 0; };
+  const move = x => { px = Math.max(0, Math.min(W - PW, x - PW / 2)); };
+  function step() {
+    tick++;
+    if (tick % Math.max(14, 40 - Math.floor(tick / 150)) === 0) {
+      const w = 24 + rand(40);
+      blocks.push({ x: rand(W - w), y: -20, w, v: 2.5 + Math.min(4, tick / 600) });
+    }
+    blocks.forEach(b => { b.y += b.v; });
+    blocks = blocks.filter(b => b.y < H + 20);
+    $('ds').textContent = Math.floor(tick / 6);
+    for (const b of blocks) {
+      if (b.y + 16 > H - 30 && b.y < H - 10 && b.x < px + PW && b.x + b.w > px) { state = 'over'; $('dg').textContent = 'Try again'; }
+    }
+  }
+  function draw() {
+    ctx.fillStyle = '#1d1b3a';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#ff5d73';
+    blocks.forEach(b => ctx.fillRect(b.x, b.y, b.w, 16));
+    ctx.fillStyle = '#2ec4b6';
+    ctx.fillRect(px, H - 30, PW, 20);
+    if (state !== 'play') {
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.font = '800 24px system-ui, sans-serif';
+      ctx.fillText(state === 'over' ? 'Crash!' : 'Ready?', W / 2, H / 2 - 20);
+      ctx.font = '600 16px system-ui, sans-serif';
+      ctx.fillText(state === 'over' ? 'Score ' + Math.floor(tick / 6) + '. Press Try again.' : 'Click, tap, or press Space', W / 2, H / 2 + 10);
+    }
+  }
+  function loop() {
+    if (state === 'play') step();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+  const follow = e => { const r = cv.getBoundingClientRect(); move((e.clientX - r.left) * (W / r.width)); };
+  const onKey = e => {
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { e.preventDefault(); move(px + PW / 2 - 18); }
+    else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { e.preventDefault(); move(px + PW / 2 + 18); }
+    else if (e.code === 'Space') { e.preventDefault(); if (state === 'ready') state = 'play'; }
+  };
+  cv.addEventListener('pointermove', follow);
+  cv.addEventListener('pointerdown', e => { follow(e); if (state === 'ready') state = 'play'; });
+  document.addEventListener('keydown', onKey);
+  $('dg').onclick = () => { reset(); state = 'play'; $('dg').textContent = 'Restart'; $('dg').blur(); };
+  reset();
+  loop();
+  return () => { cancelAnimationFrame(raf); document.removeEventListener('keydown', onKey); };
+}
+
+function tower() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Height <b id='ts'>0</b></span><button class='btn' id='tg'>Start</button></div>
+    <canvas id='tcv' class='cv' width='320' height='420' aria-label='Tower Stack game board'></canvas>
+    <p class='hint'>Tap, click, or press Space to drop the block. Line it up with the tower below.</p>
+  </div>`;
+  const cv = $('tcv'), ctx = cv.getContext('2d');
+  const W = 320, H = 420, BH = 22;
+  let stack, cur, dir, state, raf;
+  const reset = () => { stack = [{ x: 90, w: 140 }]; cur = { x: 0, w: 140 }; dir = 1; state = 'ready'; $('ts').textContent = 0; };
+  const drop = () => {
+    if (state === 'ready') { state = 'play'; return; }
+    if (state !== 'play') return;
+    const top = stack[stack.length - 1];
+    const left = Math.max(cur.x, top.x), right = Math.min(cur.x + cur.w, top.x + top.w);
+    if (right - left <= 2) { state = 'over'; $('tg').textContent = 'Try again'; return; }
+    stack.push({ x: left, w: right - left });
+    cur = { x: cur.x, w: right - left };
+    $('ts').textContent = stack.length - 1;
+  };
+  function step() {
+    if (state !== 'play') return;
+    cur.x += dir * (2 + Math.min(4, stack.length / 8));
+    if (cur.x < 0) { cur.x = 0; dir = 1; }
+    if (cur.x + cur.w > W) { cur.x = W - cur.w; dir = -1; }
+  }
+  function draw() {
+    ctx.fillStyle = '#1d1b3a';
+    ctx.fillRect(0, 0, W, H);
+    const off = Math.max(0, (stack.length - 8) * BH);
+    stack.forEach((b, i) => {
+      ctx.fillStyle = `hsl(${(i * 28) % 360}, 70%, 60%)`;
+      ctx.fillRect(b.x, H - (i + 1) * BH + off, b.w, BH - 2);
+    });
+    if (state !== 'over') {
+      ctx.fillStyle = '#f6f3ff';
+      ctx.fillRect(cur.x, H - (stack.length + 1) * BH + off, cur.w, BH - 2);
+    }
+    if (state !== 'play') {
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.font = '800 24px system-ui, sans-serif';
+      ctx.fillText(state === 'over' ? 'Tower fell!' : 'Ready?', W / 2, 70);
+      ctx.font = '600 16px system-ui, sans-serif';
+      ctx.fillText(state === 'over' ? 'Height ' + (stack.length - 1) + '. Press Try again.' : 'Tap or press Space to start', W / 2, 100);
+    }
+  }
+  function loop() {
+    step();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+  const onKey = e => { if (e.code === 'Space') { e.preventDefault(); drop(); } };
+  document.addEventListener('keydown', onKey);
+  cv.addEventListener('pointerdown', drop);
+  $('tg').onclick = () => { reset(); $('tg').textContent = 'Restart'; $('tg').blur(); };
+  reset();
+  loop();
+  return () => { cancelAnimationFrame(raf); document.removeEventListener('keydown', onKey); };
+}
+
+function hilo() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Streak <b id='hs'>0</b></span><span>Best <b id='hb'>0</b></span></div>
+    <div class='big' id='hc'></div>
+    <div class='opts' id='ho'><button class='opt' data-g='h'>Higher</button><button class='opt' data-g='l'>Lower</button></div>
+    <p class='hint' id='hm'>Will the next number (1 to 13) be higher or lower?</p>
+  </div>`;
+  let cur = 1 + rand(13), s = 0, b = 0;
+  $('hc').textContent = cur;
+  $('ho').onclick = e => {
+    const o = e.target.closest('.opt');
+    if (!o) return;
+    let nx = 1 + rand(13);
+    while (nx === cur) nx = 1 + rand(13);
+    const ok = (o.dataset.g === 'h') === (nx > cur);
+    s = ok ? s + 1 : 0;
+    b = Math.max(b, s);
+    $('hm').textContent = (ok ? 'Correct! ' : 'Wrong. ') + `${cur} then ${nx}.`;
+    cur = nx;
+    $('hc').textContent = cur;
+    $('hs').textContent = s;
+    $('hb').textContent = b;
+  };
+  return () => {};
+}
+
+function counter() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Score <b id='ns'>0</b></span><button class='btn' id='ng'>Next round</button></div>
+    <div class='big' id='nd' style='min-height:5rem;word-break:break-all'>Press Next round</div>
+    <div class='opts' id='no'></div>
+    <p class='hint' id='nm'>Count the dots before they disappear.</p>
+  </div>`;
+  let n = 0, score = 0, timer, ok = false;
+  const round = () => {
+    clearTimeout(timer);
+    n = 3 + rand(10);
+    ok = false;
+    $('nd').textContent = '●'.repeat(n);
+    $('no').innerHTML = '';
+    $('nm').textContent = 'Count them...';
+    timer = setTimeout(() => {
+      $('nd').textContent = '?';
+      const s = new Set([n]);
+      while (s.size < 4) s.add(Math.max(1, n + rand(7) - 3));
+      $('no').innerHTML = shuffle([...s]).map(v => `<button class='opt'>${v}</button>`).join('');
+      ok = true;
+    }, 1200);
+  };
+  $('no').onclick = e => {
+    const b = e.target.closest('.opt');
+    if (!b || !ok) return;
+    ok = false;
+    if (+b.textContent === n) { $('ns').textContent = ++score; $('nm').textContent = 'Correct!'; }
+    else $('nm').textContent = `It was ${n}.`;
+    $('no').innerHTML = '';
+  };
+  $('ng').onclick = round;
+  return () => clearTimeout(timer);
+}
+
+add('guess-number', 'Number Guess', '🔍', 'Casual', 'Find my secret number from 1 to 100.', guessNum);
+add('coin-streak', 'Coin Flip Streak', '🏅', 'Casual', 'Call heads or tails and build a streak.', coin);
+add('dice-duel', 'Dice Duel', '🎲', 'Casual', 'Roll two dice and beat the computer.', dice);
+add('hilo', 'Higher or Lower', '⬆️', 'Casual', 'Will the next number be higher or lower?', hilo);
+add('stroop', 'Color Clash', '🌈', 'Reflex', 'Name the color of the word, not the word.', stroop);
+add('odd-one', 'Odd One Out', '🔎', 'Reflex', 'Spot the one emoji that is different.', odd);
+add('click-speed', 'Click Speed Test', '🖱️', 'Reflex', 'How many clicks can you make in 10 seconds?', clicks);
+add('aim', 'Aim Trainer', '🏹', 'Reflex', 'Hit 20 targets as fast as you can.', aim);
+add('digits', 'Digit Memory', '🔟', 'Memory', 'Remember longer and longer numbers.', digits);
+add('quick-count', 'Quick Count', '👀', 'Math', 'Count the dots before they vanish.', counter);
+add('dodge', 'Dodge', '🚧', 'Arcade', 'Slide left and right to avoid falling blocks.', dodge);
+add('tower', 'Tower Stack', '🏗️', 'Arcade', 'Drop blocks and build the tallest tower.', tower);
+
+
+// ---- Multiplayer: same-device games and online rooms ----
+const LOBBY = `<div id='bl'><input class='inp' id='bc' maxlength='12' autocomplete='off' autocapitalize='off' spellcheck='false' placeholder='Room code, like fox42'><div class='hud' style='margin:10px 0 0'><button class='btn' id='bj'>Join room</button><button class='btn' id='br'>Random code</button></div><p class='hint'>Online rooms work for friends who open this page from its shared link.</p></div>`;
+
+function lobby(key, msg, onJoin) {
+  $('br').onclick = () => { $('bc').value = pick(['fox', 'owl', 'cat', 'bee', 'elk', 'yak'], 1)[0] + (10 + rand(90)); };
+  $('bj').onclick = async () => {
+    const code = $('bc').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (code.length < 3) { msg('Type a room code with at least 3 letters or numbers.'); return; }
+    const rt = window.claude && window.claude.use ? await window.claude.use('room') : null;
+    if (!rt) { msg('Online play needs this page opened from its shared link by invited people. Try the same-device version instead.'); return; }
+    let room;
+    try { room = await rt.join(key + '-' + code); } catch (e) { msg('Could not join that room. Try again.'); return; }
+    room.presence({ t: Date.now() });
+    $('bl').innerHTML = `<p class='hint' style='margin:0 0 10px'>Room <b>${code}</b>. Your friend opens this same game and joins the same code.</p>`;
+    msg('');
+    onJoin(room);
+  };
+}
+const duelPlayers = room => room.peers().filter(p => p.kind === 'viewer' && p.presence && p.presence.t).sort((a, b) => a.presence.t - b.presence.t || (a.peer < b.peer ? -1 : 1));
+
+const TTT = {
+  key: 'ttt', mark: ['X', 'O'],
+  init: () => ({ b: '.........', turn: 0, win: null }),
+  move(s, i, p) {
+    if (s.win !== null || s.turn !== p || s.b[i] !== '.') return null;
+    const ch = 'xo'[p];
+    const b = s.b.slice(0, i) + ch + s.b.slice(i + 1);
+    const L = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+    const w = L.some(l => l.every(k => b[k] === ch)) ? p : b.includes('.') ? null : 'd';
+    return { b, turn: 1 - p, win: w };
+  },
+  view: s => `<div class='board3'>${[...s.b].map((c, i) => `<button class='cell' data-i='${i}' aria-label='Square ${i + 1}'>${c === 'x' ? 'X' : c === 'o' ? 'O' : ''}</button>`).join('')}</div>`
+};
+
+const C4 = {
+  key: 'c4', mark: ['red', 'yellow'],
+  init: () => ({ b: '.'.repeat(42), turn: 0, win: null }),
+  move(s, c, p) {
+    if (s.win !== null || s.turn !== p) return null;
+    let r = 5;
+    while (r >= 0 && s.b[r * 7 + c] !== '.') r--;
+    if (r < 0) return null;
+    const ch = 'ry'[p], i = r * 7 + c;
+    const b = s.b.slice(0, i) + ch + s.b.slice(i + 1);
+    const at = (rr, cc) => rr >= 0 && rr < 6 && cc >= 0 && cc < 7 ? b[rr * 7 + cc] : '';
+    let won = false;
+    for (let rr = 0; rr < 6; rr++) for (let cc = 0; cc < 7; cc++) for (const [dr, dc] of [[0, 1], [1, 0], [1, 1], [1, -1]]) {
+      if (at(rr, cc) === ch && [1, 2, 3].every(k => at(rr + dr * k, cc + dc * k) === ch)) won = true;
+    }
+    return { b, turn: 1 - p, win: won ? p : b.includes('.') ? null : 'd' };
+  },
+  view: s => `<div class='board7'>${[...s.b].map((c, i) => `<button class='slot${c === 'r' ? ' red' : c === 'y' ? ' yel' : ''}' data-i='${i % 7}' aria-label='Column ${(i % 7) + 1}'></button>`).join('')}</div>`
+};
+
+function board(def, online) {
+  return () => {
+    app.innerHTML = `
+    <div class='panel'>
+      ${online ? LOBBY : ''}
+      <div class='hud' style='margin-top:14px'><span id='bs'></span><button class='btn' id='bn'>New game</button></div>
+      <div id='bb'></div>
+      <p class='hint' id='bh'></p>
+    </div>`;
+    let s = def.init(), room = null, me = -1, off = () => {};
+    const bs = $('bs'), bb = $('bb'), bh = $('bh');
+    const status = () => {
+      if (s.win !== null) return s.win === 'd' ? "It's a draw." : online ? (me < 0 ? `Player ${s.win + 1} wins.` : s.win === me ? 'You win!' : 'You lose.') : `Player ${s.win + 1} wins!`;
+      if (!online) return `Player ${s.turn + 1}'s turn (${def.mark[s.turn]})`;
+      if (!room) return 'Join a room to play';
+      if (me < 0) return 'The room is full. You are watching.';
+      if (duelPlayers(room).length < 2) return 'Waiting for a friend to join...';
+      return s.turn === me ? `Your turn (${def.mark[me]})` : "Opponent's turn";
+    };
+    const draw = () => { bb.innerHTML = def.view(s); bs.textContent = status(); };
+    const sync = () => {
+      const ps = duelPlayers(room);
+      me = ps.slice(0, 2).findIndex(p => p.isMe && p.sameTab);
+      let best = s;
+      ps.forEach(p => { const x = p.presence.s; if (x && typeof x.q === 'number' && x.q > (best.q || 0) && typeof x.b === 'string' && x.b.length === s.b.length && (x.turn === 0 || x.turn === 1) && [null, 0, 1, 'd'].includes(x.win)) best = x; });
+      if (best !== s) { s = best; room.presence({ s }); }
+      draw();
+    };
+    bb.onclick = e => {
+      const c = e.target.closest('[data-i]');
+      if (!c) return;
+      const who = online ? me : s.turn;
+      if (who < 0) return;
+      const n = def.move(s, +c.dataset.i, who);
+      if (!n) return;
+      n.q = (s.q || 0) + 1;
+      n.f = s.f || 0;
+      s = n;
+      if (online) room.presence({ s });
+      draw();
+    };
+    $('bn').onclick = () => {
+      if (online && !room) return;
+      const n = def.init();
+      n.f = 1 - (s.f || 0);
+      n.turn = n.f;
+      n.q = (s.q || 0) + 1;
+      s = n;
+      if (online) room.presence({ s });
+      draw();
+      $('bn').blur();
+    };
+    if (online) lobby(def.key, t => { bh.textContent = t; }, r => { room = r; off = room.onPeers(sync); sync(); });
+    draw();
+    return () => { off(); if (room) room.leave(); };
+  };
+}
+
+function race(online) {
+  return () => {
+    const GOAL = 30;
+    app.innerHTML = `
+    <div class='panel'>
+      ${online ? LOBBY : ''}
+      <div class='hud' style='margin-top:14px'><span>First to ${GOAL} taps wins</span><button class='btn' id='gn'>Play again</button></div>
+      <div class='hint' style='text-align:left;margin:0'>${online ? 'You' : 'Player 1'}</div><div class='meter'><i id='m0'></i></div>
+      <div class='hint' style='text-align:left;margin:0'>${online ? 'Opponent' : 'Player 2'}</div><div class='meter b'><i id='m1'></i></div>
+      <div class='big' id='gt'></div>
+      ${online
+        ? `<button class='tapb' id='t0' style='background:#2ec4b6;width:100%;display:block'>TAP! (or press A)</button>`
+        : `<div class='hud' style='gap:10px;margin:0'><button class='tapb' id='t0' style='background:#2ec4b6'>P1 · A</button><button class='tapb' id='t1' style='background:#ff8fa3'>P2 · L</button></div>`}
+      <p class='hint' id='gh'></p>
+    </div>`;
+    let room = null, off = () => {}, g = 0, taps = [0, 0], waiting = true;
+    const win = () => taps[0] >= GOAL ? 0 : taps[1] >= GOAL ? 1 : -1;
+    const draw = () => {
+      $('m0').style.width = Math.min(100, taps[0] * 100 / GOAL) + '%';
+      $('m1').style.width = Math.min(100, taps[1] * 100 / GOAL) + '%';
+      const w = win();
+      $('gt').textContent = w >= 0 ? (online ? (w === 0 ? 'You win!' : 'You lose!') : `Player ${w + 1} wins!`) : online && !room ? 'Join a room first' : online && waiting ? 'Waiting for a friend...' : 'Tap!';
+    };
+    const sync = () => {
+      const others = room.peers().filter(p => !(p.isMe && p.sameTab) && p.kind === 'viewer' && p.presence && p.presence.t);
+      const maxg = others.reduce((m, p) => Math.max(m, p.presence.g | 0), g);
+      if (maxg > g) { g = maxg; taps = [0, 0]; room.presence({ g, k: 0 }); }
+      taps[1] = others.reduce((m, p) => (p.presence.g | 0) === g ? Math.max(m, p.presence.k | 0) : m, 0);
+      waiting = others.length === 0;
+      draw();
+    };
+    const tap = i => {
+      if (win() >= 0) return;
+      if (online) { if (!room || waiting) return; taps[0]++; room.presence({ g, k: taps[0] }); }
+      else taps[i]++;
+      draw();
+    };
+    $('t0').onpointerdown = e => { e.preventDefault(); tap(0); };
+    if ($('t1')) $('t1').onpointerdown = e => { e.preventDefault(); tap(1); };
+    $('gn').onclick = () => {
+      taps = [0, 0];
+      if (online && room) { g++; room.presence({ g, k: 0 }); }
+      draw();
+      $('gn').blur();
+    };
+    const onKey = e => {
+      if (e.repeat) return;
+      const k = e.key.toLowerCase();
+      if (online) { if (k === 'a' || k === ' ') { e.preventDefault(); tap(0); } }
+      else if (k === 'a') tap(0);
+      else if (k === 'l') tap(1);
+    };
+    document.addEventListener('keydown', onKey);
+    if (online) lobby('race', t => { $('gh').textContent = t; }, r => { room = r; room.presence({ g, k: 0 }); off = room.onPeers(sync); sync(); });
+    draw();
+    return () => { off(); document.removeEventListener('keydown', onKey); if (room) room.leave(); };
+  };
+}
+
+function racer(online) {
+  return () => {
+    app.innerHTML = `
+    <div class='panel'>
+      <div class='hud'><span>Metres <b id='rd'>0</b></span><span>Lives <b id='rv'>3</b></span><button class='btn' id='rg' style='${online ? 'display:none' : ''}'>Start</button></div>
+      ${online ? LOBBY : ''}
+      <canvas id='rcv' class='cv' width='260' height='420' aria-label='Lane Race board'></canvas>
+      <div class='pad'><button id='rlf' aria-label='Left lane'>◀</button><button id='rrt' aria-label='Right lane'>▶</button></div>
+      <p class='hint' id='rm'>Change lanes with the arrow keys, A and D, the buttons, or by tapping the left or right side of the road. First to 1000 metres wins.</p>
+    </div>`;
+    const cv = $('rcv'), ctx = cv.getContext('2d');
+    const LX = [35, 105, 175], PY = 330, GOAL = 1000, W = 260, H = 420;
+    let state = online ? 'idle' : 'ready', lane = 1, px = LX[1], d = 0, lives = 3, obs = [];
+    let cpu = 0, tk = 0, room = null, off = () => {}, myFin = 0, oppD = 0, oppL = 2, oppFin = 0, seen = false, raf;
+    const opp = () => (room ? room.peers().find(p => !p.isMe && p.kind === 'viewer' && p.presence && p.presence.t) : null);
+    const move = dir => { lane = Math.max(0, Math.min(2, lane + dir)); };
+    const reset = () => { lane = 1; px = LX[1]; d = 0; lives = 3; obs = []; cpu = 0; myFin = 0; oppFin = 0; };
+    const showRestart = label => { $('rg').textContent = label; $('rg').style.display = ''; };
+    const finish = win => {
+      const won = win && !(online && oppFin);
+      state = won ? 'won' : 'lost';
+      if (won) myFin = Date.now();
+      if (online && room) room.presence({ t: Date.now(), d: Math.round(d), l: lane, f: myFin });
+      showRestart('Play again');
+    };
+    const step = () => {
+      d += Math.min(9, 5 + d / 300) * 0.1;
+      cpu += 0.5 + Math.random() * 0.08;
+      px += (LX[lane] - px) * 0.25;
+      if (Math.random() < 0.03) obs.push({ l: rand(3), y: -80 });
+      obs.forEach(o => { o.y += 3 + d / 300; });
+      for (const o of obs) {
+        if (!o.hit && o.l === lane && o.y < PY + 72 && o.y + 72 > PY) {
+          o.hit = true; lives--; d = Math.max(0, d - 25);
+          if (lives <= 0) { state = 'over'; showRestart('Try again'); }
+        }
+      }
+      obs = obs.filter(o => !o.hit && o.y < H + 10);
+    };
+    const car = (x, y, c) => {
+      ctx.fillStyle = c; ctx.fillRect(x - 20, y, 40, 72);
+      ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(x - 15, y + 12, 30, 16);
+      ctx.fillStyle = 'rgba(255,255,255,.45)'; ctx.fillRect(x - 15, y + 54, 30, 6);
+    };
+    const draw = () => {
+      ctx.fillStyle = '#14308f'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#2b2750'; ctx.fillRect(0, 0, 210, H);
+      ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 3; ctx.setLineDash([22, 18]);
+      ctx.lineDashOffset = -((d * 20) % 40);
+      ctx.beginPath(); ctx.moveTo(70, 0); ctx.lineTo(70, H); ctx.moveTo(140, 0); ctx.lineTo(140, H); ctx.stroke();
+      ctx.setLineDash([]);
+      obs.forEach(o => car(LX[o.l], o.y, '#ffd23f'));
+      const showRival = !online || seen;
+      const rivalD = online ? oppD : cpu, rivalL = online ? oppL : 2;
+      const ry = PY - (rivalD - d) * 2;
+      if (showRival && ry > -80 && ry < H) car(LX[rivalL], ry, '#2e9bff');
+      car(px, PY, '#ff5d73');
+      ctx.fillStyle = 'rgba(255,255,255,.2)'; ctx.fillRect(236, 20, 10, 380);
+      const yy = m => 400 - Math.min(GOAL, Math.max(0, m)) / GOAL * 380;
+      if (showRival) { ctx.fillStyle = '#2e9bff'; ctx.fillRect(231, yy(rivalD) - 4, 20, 8); }
+      ctx.fillStyle = '#ff5d73'; ctx.fillRect(231, yy(d) - 4, 20, 8);
+      $('rd').textContent = Math.floor(d);
+      $('rv').textContent = lives;
+      if (state !== 'play') {
+        const [h, s] = { idle: ['Join a room', 'Enter a room code above'], ready: ['Ready?', 'Press Start'], wait: ['Waiting...', 'Waiting for a friend to join'], won: ['You win!', Math.floor(d) + ' m'], lost: ['You lose', 'Better luck next race'], over: ['Crashed out', 'Press Try again'] }[state];
+        ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(0, 150, 210, 110);
+        ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+        ctx.font = '800 24px system-ui, sans-serif'; ctx.fillText(h, 105, 190);
+        ctx.font = '600 15px system-ui, sans-serif'; ctx.fillText(s, 105, 220);
+      }
+    };
+    const loop = () => {
+      tk++;
+      if (online && room && tk % 10 === 0) {
+        const o = opp();
+        if (o) {
+          seen = true;
+          oppD = o.presence.d || 0;
+          oppL = o.presence.l == null ? 2 : o.presence.l;
+          oppFin = o.presence.f || 0;
+          if (state === 'wait') { reset(); state = 'play'; $('rg').style.display = 'none'; }
+        }
+        room.presence({ t: Date.now(), d: Math.round(d), l: lane, f: myFin });
+      }
+      if (state === 'play') {
+        step();
+        if (d >= GOAL) finish(true);
+        else if (!online && cpu >= GOAL) finish(false);
+        else if (online && oppFin && !myFin) finish(false);
+      }
+      draw();
+      raf = requestAnimationFrame(loop);
+    };
+    const onKey = e => {
+      if (e.target && e.target.tagName === 'INPUT') return;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { e.preventDefault(); move(-1); }
+      else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { e.preventDefault(); move(1); }
+    };
+    document.addEventListener('keydown', onKey);
+    $('rlf').onclick = () => move(-1);
+    $('rrt').onclick = () => move(1);
+    cv.addEventListener('pointerdown', e => { const r = cv.getBoundingClientRect(); move((e.clientX - r.left) * (W / r.width) < W / 2 ? -1 : 1); });
+    $('rg').onclick = () => {
+      if (online && !room) return;
+      reset();
+      state = online ? (opp() ? 'play' : 'wait') : 'play';
+      $('rg').style.display = 'none';
+      $('rg').blur();
+    };
+    if (online) lobby('lane', t => { $('rm').textContent = t; }, r => {
+      room = r;
+      off = room.onPeers(() => {});
+      reset();
+      state = 'wait';
+    });
+    draw();
+    raf = requestAnimationFrame(loop);
+    return () => { cancelAnimationFrame(raf); off(); document.removeEventListener('keydown', onKey); if (room) room.leave(); };
+  };
+}
+
+add('battle', 'Zone Royale', '🪂', 'Arcade', 'Drop in, loot up, and be the last one standing in the shrinking ring.', battle);
+
+function battle() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Alive <b id='bA'>15</b></span><span>Ammo <b id='bM'>30</b></span><span>HP <b id='bH'>100</b></span><button class='btn' id='bG'>Drop in</button></div>
+    <canvas id='bC' class='cv' width='320' height='420' aria-label='Zone Royale battlefield'></canvas>
+    <p class='hint'>PC: WASD to move, mouse to aim, click or hold Space to fire. Phone: drag the left side to move, hold the right side to aim and fire. Stay inside the white ring.</p>
+  </div>`;
+  const cv = $('bC'), ctx = cv.getContext('2d');
+  const W = 320, H = 420, WORLD = 1200, C0 = 600, STAGES = [520, 360, 230, 120, 40];
+  const keys = {};
+  let P = null, bots = [], items = [], bullets = [], zone = null, stick = null, aim = null, fireId = null, state = 'idle', raf;
+  const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+  const bound = v => Math.max(16, Math.min(WORLD - 16, v));
+  const ring = (r, a) => ({ x: C0 + Math.cos(a) * r, y: C0 + Math.sin(a) * r });
+  const shoot = (o, ang, who) => bullets.push({ x: o.x + Math.cos(ang) * 16, y: o.y + Math.sin(ang) * 16, vx: Math.cos(ang) * 7, vy: Math.sin(ang) * 7, life: 60, who });
+  const drop = () => {
+    P = { x: C0, y: C0 + 120, hp: 100, ang: -1.57, cd: 0, ammo: 30 };
+    bots = Array.from({ length: 14 }, () => { const p = ring(Math.random() * 480, Math.random() * 6.28); return { x: p.x, y: p.y, hp: 100, cd: rand(40), t: 0, tx: p.x, ty: p.y, ang: 0, alive: true }; });
+    items = Array.from({ length: 45 }, () => ({ x: 40 + rand(WORLD - 80), y: 40 + rand(WORLD - 80), k: Math.random() < 0.6 ? 'a' : 'm' }));
+    bullets = [];
+    zone = { r: 620, k: 0, phase: 'hold', t: 0, from: 620, to: 620 };
+    aim = null; stick = null; fireId = null;
+    state = 'play';
+    $('bG').textContent = 'Restart';
+    $('bG').blur();
+  };
+  const think = b => {
+    if (!b.alive) return;
+    b.cd--; b.t--;
+    const dp = dist(b, P), outside = dist(b, { x: C0, y: C0 }) > zone.r - 12;
+    if (outside) { b.tx = C0; b.ty = C0; }
+    else if (dp < 260) {
+      b.ang = Math.atan2(P.y - b.y, P.x - b.x);
+      if (b.cd <= 0) { shoot(b, b.ang + (Math.random() - 0.5) * 0.3, 'b'); b.cd = 40 + rand(30); }
+      return;
+    } else if (b.t <= 0) {
+      const p = ring(Math.random() * Math.max(0, zone.r - 60), Math.random() * 6.28);
+      b.tx = p.x; b.ty = p.y; b.t = 120 + rand(120);
+    }
+    const dx = b.tx - b.x, dy = b.ty - b.y, d = Math.hypot(dx, dy);
+    if (d > 3) { const s = outside ? 1.8 : 1.2; b.ang = Math.atan2(dy, dx); b.x = bound(b.x + dx / d * s); b.y = bound(b.y + dy / d * s); }
+  };
+  const zoneTick = () => {
+    zone.t++;
+    if (zone.phase === 'hold' && zone.t > 600 && zone.k < STAGES.length) { zone.phase = 'shrink'; zone.t = 0; zone.from = zone.r; zone.to = STAGES[zone.k]; }
+    else if (zone.phase === 'shrink') { zone.r = zone.from + (zone.to - zone.from) * Math.min(1, zone.t / 900); if (zone.t >= 900) { zone.phase = 'hold'; zone.t = 0; zone.k++; } }
+  };
+  const bulletsTick = () => {
+    for (const u of bullets) {
+      u.x += u.vx; u.y += u.vy; u.life--;
+      if (u.who === 'p') {
+        for (const b of bots) if (b.alive && Math.hypot(b.x - u.x, b.y - u.y) < 16) { b.hp -= 25; u.life = 0; if (b.hp <= 0) b.alive = false; break; }
+      } else if (P.hp > 0 && Math.hypot(P.x - u.x, P.y - u.y) < 16) { P.hp -= 12; u.life = 0; }
+    }
+    bullets = bullets.filter(u => u.life > 0 && u.x > 0 && u.x < WORLD && u.y > 0 && u.y < WORLD);
+  };
+  const move = () => {
+    let mx = (keys.d || keys.arrowright ? 1 : 0) - (keys.a || keys.arrowleft ? 1 : 0);
+    let my = (keys.s || keys.arrowdown ? 1 : 0) - (keys.w || keys.arrowup ? 1 : 0);
+    if (stick) { mx = stick.x; my = stick.y; }
+    const l = Math.hypot(mx, my);
+    if (l > 0.05) { P.x = bound(P.x + mx / Math.max(1, l) * 2.6); P.y = bound(P.y + my / Math.max(1, l) * 2.6); if (!aim) P.ang = Math.atan2(my, mx); }
+    if (aim) P.ang = Math.atan2(aim.y - H / 2, aim.x - W / 2);
+  };
+  const fire = () => {
+    P.cd--;
+    if ((fireId !== null || keys[' ']) && P.ammo > 0 && P.cd <= 0 && P.hp > 0) { shoot(P, P.ang, 'p'); P.ammo--; P.cd = 9; }
+  };
+  const pickups = () => {
+    items = items.filter(it => {
+      if (dist(it, P) > 24) return true;
+      if (it.k === 'a') P.ammo += 30; else P.hp = Math.min(100, P.hp + 35);
+      return false;
+    });
+  };
+  const zoneDamage = () => {
+    const c = { x: C0, y: C0 };
+    if (P.hp > 0 && dist(P, c) > zone.r) P.hp -= 0.05;
+    for (const b of bots) if (b.alive && dist(b, c) > zone.r) { b.hp -= 0.05; if (b.hp <= 0) b.alive = false; }
+  };
+  const checkEnd = () => {
+    if (P.hp <= 0) { P.hp = 0; state = 'lost'; }
+    else if (!bots.some(b => b.alive)) state = 'won';
+    if (state !== 'play') $('bG').textContent = 'Play again';
+  };
+  const tank = (x, y, c, ang) => {
+    ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, 14, 0, 6.2832); ctx.fill();
+    ctx.strokeStyle = '#1d1b3a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(ang) * 22, y + Math.sin(ang) * 22); ctx.stroke();
+  };
+  const draw = () => {
+    const cx = P.x - W / 2, cy = P.y - H / 2;
+    ctx.fillStyle = '#5a1e2a'; ctx.fillRect(0, 0, W, H);
+    ctx.save(); ctx.beginPath(); ctx.arc(C0 - cx, C0 - cy, zone.r, 0, 6.2832); ctx.clip();
+    ctx.fillStyle = '#3f8f47'; ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(0,0,0,.14)'; ctx.lineWidth = 2;
+    for (let x = ((-cx % 60) + 60) % 60; x < W; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+    for (let y = ((-cy % 60) + 60) % 60; y < H; y += 60) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+    ctx.restore();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(C0 - cx, C0 - cy, zone.r, 0, 6.2832); ctx.stroke();
+    ctx.textAlign = 'center';
+    for (const it of items) {
+      const x = it.x - cx, y = it.y - cy;
+      if (x < -12 || x > W + 12 || y < -12 || y > H + 12) continue;
+      ctx.fillStyle = it.k === 'a' ? '#ffd23f' : '#ff5d73'; ctx.beginPath(); ctx.arc(x, y, 9, 0, 6.2832); ctx.fill();
+      ctx.fillStyle = '#1d1b3a'; ctx.font = '800 12px system-ui, sans-serif'; ctx.fillText(it.k === 'a' ? 'A' : '+', x, y + 4);
+    }
+    for (const b of bots) {
+      if (!b.alive) continue;
+      const x = b.x - cx, y = b.y - cy;
+      if (x < -30 || x > W + 30 || y < -30 || y > H + 30) continue;
+      tank(x, y, '#2e9bff', b.ang);
+      ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(x - 14, y - 22, 28, 5);
+      ctx.fillStyle = '#43e97b'; ctx.fillRect(x - 14, y - 22, 28 * Math.max(0, b.hp) / 100, 5);
+    }
+    ctx.fillStyle = '#fff3a0';
+    for (const u of bullets) { ctx.beginPath(); ctx.arc(u.x - cx, u.y - cy, 3, 0, 6.2832); ctx.fill(); }
+    if (P.hp > 0) tank(W / 2, H / 2, '#ffb70a', P.ang);
+    $('bA').textContent = (P.hp > 0 ? 1 : 0) + bots.filter(b => b.alive).length;
+    $('bM').textContent = P.ammo;
+    $('bH').textContent = Math.ceil(P.hp);
+    if (state !== 'play') {
+      const [h, s] = { won: ['Last one standing!', 'You outlasted every rival'], lost: ['Eliminated', 'Press Restart to drop in again'] }[state];
+      ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(0, 150, W, 110);
+      ctx.fillStyle = '#fff'; ctx.font = '800 24px system-ui, sans-serif'; ctx.fillText(h, W / 2, 190);
+      ctx.font = '600 15px system-ui, sans-serif'; ctx.fillText(s, W / 2, 220);
+    }
+  };
+  const drawIdle = () => {
+    ctx.fillStyle = '#3f8f47'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+    ctx.font = '800 26px system-ui, sans-serif'; ctx.fillText('Ready to drop in?', W / 2, H / 2);
+    ctx.font = '600 15px system-ui, sans-serif'; ctx.fillText('Press Drop in above', W / 2, H / 2 + 30);
+  };
+  const loop = () => {
+    if (state === 'play') { move(); fire(); bots.forEach(think); zoneTick(); bulletsTick(); pickups(); zoneDamage(); checkEnd(); }
+    if (state === 'idle') drawIdle(); else draw();
+    raf = requestAnimationFrame(loop);
+  };
+  const kd = e => {
+    if (e.target && e.target.tagName === 'INPUT') return;
+    const k = e.key.toLowerCase();
+    if (['w', 'a', 's', 'd', ' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(k)) { e.preventDefault(); keys[k] = true; }
+  };
+  const ku = e => { keys[e.key.toLowerCase()] = false; };
+  const at = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * (W / r.width), y: (e.clientY - r.top) * (H / r.height) }; };
+  cv.addEventListener('pointerdown', e => {
+    if (state !== 'play') return;
+    const p = at(e);
+    cv.setPointerCapture(e.pointerId);
+    if (e.pointerType !== 'mouse' && p.x < W / 2) stick = { id: e.pointerId, ox: p.x, oy: p.y, x: 0, y: 0 };
+    else { fireId = e.pointerId; aim = p; }
+  });
+  cv.addEventListener('pointermove', e => {
+    const p = at(e);
+    if (stick && e.pointerId === stick.id) { const dx = p.x - stick.ox, dy = p.y - stick.oy, l = Math.hypot(dx, dy) || 1, k = Math.min(l, 40) / l; stick.x = dx * k / 40; stick.y = dy * k / 40; }
+    else if (e.pointerType === 'mouse' || e.pointerId === fireId) aim = p;
+  });
+  const release = e => { if (stick && e.pointerId === stick.id) stick = null; if (e.pointerId === fireId) fireId = null; };
+  cv.addEventListener('pointerup', release);
+  cv.addEventListener('pointercancel', release);
+  document.addEventListener('keydown', kd);
+  document.addEventListener('keyup', ku);
+  $('bG').onclick = () => drop();
+  loop();
+  return () => { cancelAnimationFrame(raf); document.removeEventListener('keydown', kd); document.removeEventListener('keyup', ku); };
+}
+
+function stormCircle() {
+  app.innerHTML = `
+  <div class='panel'>
+    <div class='hud'><span>Alive <b id='bA'>10</b></span><span>Hp <b id='bH'>100</b></span><span id='bG'>Pistol</span><button class='btn' id='bS'>Drop in</button></div>
+    <canvas id='bC' class='cv' width='340' height='460' aria-label='Storm Circle battle'></canvas>
+    <div class='pad'><button id='bF' style='width:140px;height:60px;font-weight:800' aria-label='Fire'>FIRE</button></div>
+    <p class='hint'>PC: WASD to move, mouse to aim, click or hold Space to fire. Phone: drag on the map to move, hold FIRE to shoot. Stay inside the storm.</p>
+  </div>`;
+  const cv = $('bC'), ctx = cv.getContext('2d');
+  const W = 340, H = 460, MAP = 1200;
+  const GUN = { pistol: { dmg: 12, rate: 24, spread: 0.05, name: 'Pistol' }, rifle: { dmg: 16, rate: 9, spread: 0.09, name: 'Rifle' } };
+  const COL = ['#ff8c42', '#7c6cff', '#2e9e4f', '#0ea5e9', '#e0a800', '#f093fb', '#43e97b', '#fa709a', '#2ec4b6'];
+  const keys = {}, stick = { on: false, x: 0, y: 0, ox: 0, oy: 0 };
+  let me, bots, bullets, loot, walls, frameN, state = 'ready', endInfo = null, mouseAim = null, firing = false, zoneR = 820, raf;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const hyp = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+  const inWall = (x, y, r = 12) => walls.some(w => x + r > w.x && x - r < w.x + w.w && y + r > w.y && y - r < w.y + w.h);
+  const moveBody = (o, dx, dy) => {
+    if (!inWall(o.x + dx, o.y)) o.x += dx;
+    if (!inWall(o.x, o.y + dy)) o.y += dy;
+    o.x = Math.max(12, Math.min(MAP - 12, o.x));
+    o.y = Math.max(12, Math.min(MAP - 12, o.y));
+  };
+  const freeSpot = () => { let x, y; do { x = rnd(60, MAP - 60); y = rnd(60, MAP - 60); } while (inWall(x, y, 20)); return { x, y }; };
+  const newLoot = () => { const p = freeSpot(), r = Math.random(); return { ...p, k: r < 0.35 ? 'rifle' : r < 0.7 ? 'medkit' : 'ammo' }; };
+  const newActor = (p, extra) => ({ x: p.x, y: p.y, hp: 100, gun: 'pistol', ammo: 0, face: 0, cd: 0, alive: true, t: 0, tx: p.x, ty: p.y, ...extra });
+  const nearest = (a, r) => bots.filter(b => b.alive && hyp(a, b) < r).sort((p, q) => hyp(a, p) - hyp(a, q))[0];
+  const pickUp = a => {
+    loot = loot.filter(l => {
+      if (hyp(l, a) > 24) return true;
+      if (l.k === 'medkit') a.hp = Math.min(100, a.hp + 40);
+      else if (l.k === 'rifle' || a.gun === 'rifle') { a.gun = 'rifle'; a.ammo = Math.min(60, a.ammo + 30); }
+      else return true;
+      return false;
+    });
+  };
+  const fire = (a, ang, extra = 0) => {
+    const g = GUN[a.gun], s = ang + rnd(-g.spread - extra, g.spread + extra);
+    bullets.push({ x: a.x, y: a.y, vx: Math.cos(s) * 13, vy: Math.sin(s) * 13, dmg: a === me ? g.dmg : g.dmg * 0.55, by: a, life: 70 });
+    a.cd = g.rate;
+    if (a.gun === 'rifle' && --a.ammo <= 0) a.gun = 'pistol';
+  };
+  const hurt = (t, dmg, by) => {
+    if (!t.alive) return;
+    t.hp -= dmg;
+    if (t.hp <= 0) {
+      t.alive = false;
+      if (by === me) me.kills++;
+      loot.push({ x: t.x, y: t.y, k: t.gun === 'rifle' ? 'rifle' : 'medkit' });
+    }
+  };
+  const finish = win => {
+    state = win ? 'won' : 'lost';
+    endInfo = { place: bots.filter(b => b.alive).length + (me.alive ? 1 : 2), kills: me.kills };
+    $('bS').textContent = 'Play again';
+  };
+  const setup = () => {
+    walls = Array.from({ length: 22 }, () => ({ x: rnd(40, MAP - 180), y: rnd(40, MAP - 180), w: rnd(60, 150), h: rnd(50, 120) })).filter(w => Math.hypot(w.x - MAP / 2, w.y - MAP / 2) > 140);
+    loot = Array.from({ length: 80 }, () => newLoot());
+    me = newActor(freeSpot(), { kills: 0 });
+    bots = COL.map(c => newActor(freeSpot(), { c, face: rnd(0, 6.28) }));
+    bullets = []; frameN = 0; zoneR = 820; mouseAim = null; endInfo = null;
+  };
+  const tick = () => {
+    if (state !== 'play') return;
+    frameN++;
+    zoneR = Math.max(60, 820 - frameN / 60 * 6.5);
+    let mx = 0, my = 0;
+    if (stick.on) { mx = stick.x; my = stick.y; }
+    else {
+      mx = (keys.R ? 1 : 0) - (keys.L ? 1 : 0);
+      my = (keys.D ? 1 : 0) - (keys.U ? 1 : 0);
+      const L = Math.hypot(mx, my) || 1;
+      mx /= L; my /= L;
+    }
+    if (me.alive) {
+      if (mx || my) { moveBody(me, mx * 2.6, my * 2.6); me.face = Math.atan2(my, mx); }
+      pickUp(me);
+      const near = nearest(me, 320);
+      me.aim = mouseAim !== null ? mouseAim : near ? Math.atan2(near.y - me.y, near.x - me.x) : me.face;
+      me.cd = Math.max(0, me.cd - 1);
+      if ((firing || keys.F) && me.cd <= 0) fire(me, me.aim);
+    }
+    bots.forEach(b => {
+      if (!b.alive) return;
+      b.cd = Math.max(0, b.cd - 1);
+      b.t--;
+      if (me.alive && hyp(b, me) < 300) {
+        const ang = Math.atan2(me.y - b.y, me.x - b.x);
+        b.face = ang;
+        if (b.cd <= 0) fire(b, ang, 0.12);
+        moveBody(b, Math.cos(ang + 1.57) * 1.1, Math.sin(ang + 1.57) * 1.1);
+        return;
+      }
+      pickUp(b);
+      if (b.t <= 0) {
+        const l = loot.filter(q => hyp(q, b) < 260).sort((p, q) => hyp(p, b) - hyp(q, b))[0];
+        if (l) { b.tx = l.x; b.ty = l.y; } else { b.tx = rnd(60, MAP - 60); b.ty = rnd(60, MAP - 60); }
+        b.t = 150;
+      }
+      const ang = Math.atan2(b.ty - b.y, b.tx - b.x);
+      if (hyp(b, { x: b.tx, y: b.ty }) < 12) b.t = 0;
+      moveBody(b, Math.cos(ang) * 1.3, Math.sin(ang) * 1.3);
+      b.face = ang;
+    });
+    bullets.forEach(bu => {
+      bu.x += bu.vx; bu.y += bu.vy; bu.life--;
+      if (inWall(bu.x, bu.y, 1)) bu.life = 0;
+      for (const t of [me, ...bots]) if (bu.life > 0 && t.alive && t !== bu.by && hyp(t, bu) < 16) { hurt(t, bu.dmg, bu.by); bu.life = 0; }
+    });
+    bullets = bullets.filter(bu => bu.life > 0);
+    [me, ...bots].forEach(a => { if (a.alive && Math.hypot(a.x - MAP / 2, a.y - MAP / 2) > zoneR) hurt(a, 4 / 60, null); });
+    const left = bots.filter(b => b.alive).length;
+    if (!me.alive) finish(false);
+    else if (left === 0) finish(true);
+  };
+  const body = (a, col, ang) => {
+    if (!a.alive) return;
+    ctx.beginPath(); ctx.arc(a.x, a.y, 14, 0, 6.283); ctx.fillStyle = col; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#1d1b3a'; ctx.stroke();
+    ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(a.x + Math.cos(ang) * 22, a.y + Math.sin(ang) * 22); ctx.stroke();
+    ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.fillRect(a.x - 16, a.y - 24, 32, 5);
+    ctx.fillStyle = '#7dff8a'; ctx.fillRect(a.x - 16, a.y - 24, 32 * Math.max(0, a.hp) / 100, 5);
+  };
+  const draw = () => {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = '#4f9d4a'; ctx.fillRect(0, 0, W, H);
+    const cx = me.x - W / 2, cy = me.y - H / 2;
+    ctx.setTransform(1, 0, 0, 1, -cx, -cy);
+    ctx.fillStyle = '#4f9d4a'; ctx.fillRect(0, 0, MAP, MAP);
+    ctx.fillStyle = 'rgba(255,255,255,.06)';
+    for (let gx = 0; gx < MAP; gx += 80) for (let gy = 0; gy < MAP; gy += 80) if ((gx + gy) / 80 % 2 === 0) ctx.fillRect(gx, gy, 80, 80);
+    for (const w of walls) {
+      ctx.fillStyle = '#7a5a3c'; ctx.fillRect(w.x, w.y, w.w, w.h);
+      ctx.fillStyle = '#a57c53'; ctx.fillRect(w.x, w.y, w.w, 12);
+      ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(w.x, w.y + w.h - 6, w.w, 6);
+    }
+    for (const l of loot) {
+      ctx.beginPath(); ctx.arc(l.x, l.y, 11, 0, 6.283);
+      ctx.fillStyle = l.k === 'medkit' ? '#ff5d73' : l.k === 'rifle' ? '#ffb70a' : '#2ec4b6';
+      ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#fff'; ctx.stroke();
+    }
+    ctx.fillStyle = '#fff3a0';
+    for (const bu of bullets) { ctx.beginPath(); ctx.arc(bu.x, bu.y, 3, 0, 6.283); ctx.fill(); }
+    bots.forEach(b => body(b, b.c, b.face));
+    body(me, '#ff5d73', me.aim !== undefined ? me.aim : me.face);
+    ctx.beginPath(); ctx.rect(0, 0, MAP, MAP); ctx.arc(MAP / 2, MAP / 2, zoneR, 0, 6.283, true);
+    ctx.fillStyle = 'rgba(120,40,200,.38)'; ctx.fill('evenodd');
+    ctx.beginPath(); ctx.arc(MAP / 2, MAP / 2, zoneR, 0, 6.283); ctx.lineWidth = 6; ctx.strokeStyle = '#d7b8ff'; ctx.stroke();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    if (state !== 'play') {
+      ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(0, 170, W, 120);
+      ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+      ctx.font = '800 26px system-ui, sans-serif';
+      const head = state === 'ready' ? 'Ready to drop?' : state === 'won' ? 'Winner winner!' : 'Eliminated';
+      ctx.fillText(head, W / 2, 212);
+      ctx.font = '600 16px system-ui, sans-serif';
+      const sub = endInfo ? `#${endInfo.place} place · ${endInfo.kills} kills` : 'Press Drop in';
+      ctx.fillText(sub, W / 2, 246);
+    }
+  };
+  const hud = () => {
+    $('bA').textContent = bots.filter(b => b.alive).length + (me.alive ? 1 : 0);
+    $('bH').textContent = Math.max(0, Math.ceil(me.hp));
+    $('bG').textContent = GUN[me.gun].name + (me.gun === 'rifle' ? ' ' + me.ammo : '');
+  };
+  const loop = () => {
+    tick(); hud(); draw();
+    raf = requestAnimationFrame(loop);
+  };
+  const KEY = { ArrowLeft: 'L', a: 'L', A: 'L', ArrowRight: 'R', d: 'R', D: 'R', ArrowUp: 'U', w: 'U', W: 'U', ArrowDown: 'D', s: 'D', S: 'D', ' ': 'F' };
+  const onDown = e => { const k = KEY[e.key]; if (!k || (e.target && e.target.tagName === 'INPUT')) return; e.preventDefault(); keys[k] = true; };
+  const onUp = e => { const k = KEY[e.key]; if (k) keys[k] = false; };
+  const onRelease = () => { firing = false; stick.on = false; };
+  const toScreen = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * (W / r.width), y: (e.clientY - r.top) * (H / r.height) }; };
+  cv.addEventListener('pointerdown', e => {
+    if (cv.setPointerCapture) cv.setPointerCapture(e.pointerId);
+    const p = toScreen(e);
+    if (e.pointerType === 'mouse') { firing = true; mouseAim = Math.atan2(p.y - H / 2, p.x - W / 2); }
+    else { mouseAim = null; stick.on = true; stick.ox = p.x; stick.oy = p.y; stick.x = 0; stick.y = 0; }
+  });
+  cv.addEventListener('pointermove', e => {
+    const p = toScreen(e);
+    if (e.pointerType === 'mouse') { mouseAim = Math.atan2(p.y - H / 2, p.x - W / 2); return; }
+    if (!stick.on) return;
+    const dx = p.x - stick.ox, dy = p.y - stick.oy, L = Math.hypot(dx, dy);
+    if (L < 6) { stick.x = 0; stick.y = 0; return; }
+    const m = Math.min(1, L / 40);
+    stick.x = dx / L * m; stick.y = dy / L * m;
+  });
+  $('bF').addEventListener('pointerdown', e => { e.preventDefault(); mouseAim = null; firing = true; });
+  $('bF').addEventListener('pointerup', () => { firing = false; });
+  $('bF').addEventListener('pointerleave', () => { firing = false; });
+  document.addEventListener('keydown', onDown);
+  document.addEventListener('keyup', onUp);
+  document.addEventListener('pointerup', onRelease);
+  $('bS').onclick = e => { setup(); state = 'play'; $('bS').textContent = 'Restart'; e.currentTarget.blur(); };
+  setup();
+  raf = requestAnimationFrame(loop);
+  return () => {
+    cancelAnimationFrame(raf);
+    document.removeEventListener('keydown', onDown);
+    document.removeEventListener('keyup', onUp);
+    document.removeEventListener('pointerup', onRelease);
+  };
+}
+add('storm', 'Storm Circle', '🌀', 'Arcade', 'Loot up, outlast nine bots, and stay inside the shrinking storm.', stormCircle);
+
+function drive(online) {
+  return () => {
+    app.innerHTML = `
+    <div class='panel'>
+      <div class='hud'><span>km/h <b id='dsp'>0</b></span><span>Lap <b id='dlp'>1</b>/3</span><span>Place <b id='dpl'>1</b></span><button class='btn' id='dgo' style='${online ? 'display:none' : ''}'>Start</button></div>
+      ${online ? LOBBY : ''}
+      <div id='dwrap'></div>
+      <div class='pad'><button id='dl' aria-label='Steer left'>◀</button><button id='dg' aria-label='Gas'>GAS</button><button id='db' aria-label='Brake'>BRAKE</button><button id='dr' aria-label='Steer right'>▶</button></div>
+      <p class='hint' id='dm'>Arrow keys or WASD to drive and steer. Space brakes. Finish 3 laps first.</p>
+    </div>`;
+    if (typeof THREE === 'undefined') { $('dm').textContent = '3D graphics could not load. Check your connection and reload.'; return () => {}; }
+    let renderer;
+    try { renderer = new THREE.WebGLRenderer({ antialias: true }); } catch (e) { $('dm').textContent = '3D is not supported on this device.'; return () => {}; }
+    const W = 340, H = 320;
+    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    renderer.setSize(W, H);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.domElement.style.cssText = 'display:block;width:100%;max-width:340px;height:auto;margin:0 auto;border-radius:16px;border:4px solid #fff;touch-action:none';
+    $('dwrap').appendChild(renderer.domElement);
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x9fd8ff);
+    scene.fog = new THREE.Fog(0x9fd8ff, 120, 340);
+    const camera = new THREE.PerspectiveCamera(62, W / H, 0.5, 600);
+    const A = 90, B = 55, HW = 9, LAP = Math.PI * 2, GOAL = LAP * 3, SEG = 240;
+    const canvasTex = (w, h, draw, rep) => {
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      draw(c.getContext('2d'), w, h);
+      const t = new THREE.CanvasTexture(c);
+      t.wrapS = t.wrapT = THREE.RepeatWrapping;
+      if (rep) t.repeat.set(rep[0], rep[1]);
+      t.encoding = THREE.sRGBEncoding;
+      return t;
+    };
+    scene.add(new THREE.HemisphereLight(0xcfeaff, 0x3c6e2a, 0.75));
+    const sun = new THREE.DirectionalLight(0xfff3d6, 1.0);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 45, bottom: -45, near: 10, far: 240 });
+    sun.shadow.camera.updateProjectionMatrix();
+    sun.shadow.bias = -0.0008;
+    scene.add(sun, sun.target);
+    const grass = canvasTex(256, 256, (g, w, h) => {
+      g.fillStyle = '#4caf50'; g.fillRect(0, 0, w, h);
+      for (let i = 0; i < 1400; i++) { g.fillStyle = Math.random() < 0.5 ? 'rgba(30,110,40,.35)' : 'rgba(150,225,120,.25)'; g.fillRect(Math.random() * w, Math.random() * h, 2, 2); }
+    }, [60, 60]);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(900, 900), new THREE.MeshStandardMaterial({ map: grass, roughness: 1 }));
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    scene.add(ground);
+    const asphalt = canvasTex(256, 256, (g, w, h) => {
+      g.fillStyle = '#3a3d46'; g.fillRect(0, 0, w, h);
+      for (let i = 0; i < 2500; i++) { g.fillStyle = Math.random() < 0.5 ? 'rgba(0,0,0,.2)' : 'rgba(255,255,255,.05)'; g.fillRect(Math.random() * w, Math.random() * h, 2, 2); }
+      g.fillStyle = '#f2f2f2'; g.fillRect(125, 0, 6, 120);
+    }, [1, 40]);
+    const roadPos = [], roadIdx = [], roadUv = [];
+    for (let i = 0; i <= SEG; i++) {
+      const t = i / SEG * LAP;
+      const cx = A * Math.cos(t), cz = B * Math.sin(t);
+      const tx = -A * Math.sin(t), tz = B * Math.cos(t), L = Math.hypot(tx, tz);
+      const nx = -tz / L * HW, nz = tx / L * HW;
+      roadPos.push(cx + nx, 0.03, cz + nz, cx - nx, 0.03, cz - nz);
+      roadUv.push(0, i / SEG, 1, i / SEG);
+      if (i < SEG) { const k = i * 2; roadIdx.push(k, k + 1, k + 2, k + 1, k + 3, k + 2); }
+    }
+    const roadGeo = new THREE.BufferGeometry();
+    roadGeo.setAttribute('position', new THREE.Float32BufferAttribute(roadPos, 3));
+    roadGeo.setAttribute('uv', new THREE.Float32BufferAttribute(roadUv, 2));
+    roadGeo.setIndex(roadIdx);
+    roadGeo.computeVertexNormals();
+    const road = new THREE.Mesh(roadGeo, new THREE.MeshStandardMaterial({ map: asphalt, roughness: 0.85, side: THREE.DoubleSide }));
+    road.receiveShadow = true;
+    scene.add(road);
+    const curbTex = canvasTex(64, 64, g => { g.fillStyle = '#f5f5f5'; g.fillRect(0, 0, 64, 64); g.fillStyle = '#e0303a'; g.fillRect(0, 0, 64, 32); }, [1, 60]);
+    const curb = (inner, outer) => {
+      const p = [], ix = [], u = [];
+      for (let i = 0; i <= SEG; i++) {
+        const t = i / SEG * LAP, cx = A * Math.cos(t), cz = B * Math.sin(t);
+        const tx = -A * Math.sin(t), tz = B * Math.cos(t), L = Math.hypot(tx, tz);
+        const nx = -tz / L, nz = tx / L;
+        p.push(cx + nx * outer, 0.05, cz + nz * outer, cx + nx * inner, 0.05, cz + nz * inner);
+        u.push(0, i / SEG, 1, i / SEG);
+        if (i < SEG) { const k = i * 2; ix.push(k, k + 1, k + 2, k + 1, k + 3, k + 2); }
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.Float32BufferAttribute(p, 3));
+      geo.setAttribute('uv', new THREE.Float32BufferAttribute(u, 2));
+      geo.setIndex(ix);
+      geo.computeVertexNormals();
+      const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: curbTex, roughness: 0.6, side: THREE.DoubleSide }));
+      m.receiveShadow = true;
+      scene.add(m);
+    };
+    curb(HW, HW + 1.4); curb(-HW, -HW - 1.4);
+    const finish = new THREE.Mesh(new THREE.BoxGeometry(HW * 2, 0.1, 1.6), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+    finish.position.set(A, 0.07, 0);
+    scene.add(finish);
+    const trunkMat = new THREE.MeshStandardMaterial({ color: 0x6b4a2b, roughness: 0.9 });
+    const leafGeo = new THREE.IcosahedronGeometry(2.4, 0);
+    const leafMats = [0x2f8f3a, 0x3da24a, 0x27733a].map(c => new THREE.MeshStandardMaterial({ color: c, flatShading: true, roughness: 0.8 }));
+    for (let k = 0; k < 64; k++) {
+      const t = Math.random() * LAP, f = 1.35 + Math.random() * 0.55, s = 0.8 + Math.random() * 0.7;
+      const g = new THREE.Group();
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.5, 2.2, 6), trunkMat);
+      trunk.position.y = 1.1; trunk.castShadow = true; g.add(trunk);
+      const leaves = new THREE.Mesh(leafGeo, leafMats[k % 3]);
+      leaves.position.y = 3.6; leaves.castShadow = true; g.add(leaves);
+      g.position.set(A * f * Math.cos(t), 0, B * f * Math.sin(t));
+      g.scale.setScalar(s);
+      scene.add(g);
+    }
+    const carMesh = color => {
+      const g = new THREE.Group();
+      const paint = new THREE.MeshStandardMaterial({ color, metalness: 0.5, roughness: 0.35 });
+      const glass = new THREE.MeshStandardMaterial({ color: 0x14203a, metalness: 0.9, roughness: 0.05 });
+      const trim = new THREE.MeshStandardMaterial({ color: 0x1b1b1f, metalness: 0.3, roughness: 0.6 });
+      const rimMat = new THREE.MeshStandardMaterial({ color: 0xc8ccd4, metalness: 0.8, roughness: 0.25 });
+      const tail = new THREE.MeshStandardMaterial({ color: 0xff2d2d, emissive: 0xff1a1a, emissiveIntensity: 0.3 });
+      const head = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff6c8, emissiveIntensity: 0.8 });
+      const add = (geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; g.add(m); return m; };
+      add(new THREE.BoxGeometry(3.2, 0.7, 5.2), paint, 0, 0.8, 0);
+      add(new THREE.BoxGeometry(2.8, 0.5, 2.6), paint, 0, 1.25, 0.8);
+      add(new THREE.BoxGeometry(2.5, 0.8, 2.4), glass, 0, 1.7, -0.2);
+      add(new THREE.BoxGeometry(2.6, 0.2, 2.5), trim, 0, 2.15, -0.2);
+      add(new THREE.BoxGeometry(3.2, 0.12, 0.7), trim, 0, 1.6, -2.6);
+      add(new THREE.BoxGeometry(0.5, 0.25, 0.1), head, 0.9, 0.9, 2.62);
+      add(new THREE.BoxGeometry(0.5, 0.25, 0.1), head, -0.9, 0.9, 2.62);
+      add(new THREE.BoxGeometry(0.6, 0.22, 0.1), tail, 0.85, 0.9, -2.62);
+      add(new THREE.BoxGeometry(0.6, 0.22, 0.1), tail, -0.85, 0.9, -2.62);
+      const wheelGeo = new THREE.CylinderGeometry(0.62, 0.62, 0.55, 16);
+      const rimGeo = new THREE.CylinderGeometry(0.34, 0.34, 0.57, 12);
+      [[-1.55, 1.6], [1.55, 1.6], [-1.55, -1.65], [1.55, -1.65]].forEach(([x, z]) => {
+        const w = add(wheelGeo, trim, x, 0.62, z); w.rotation.z = Math.PI / 2;
+        const r = new THREE.Mesh(rimGeo, rimMat); r.rotation.z = Math.PI / 2; r.position.set(x, 0.62, z); g.add(r);
+      });
+      g.userData.tail = tail;
+      scene.add(g);
+      return g;
+    };
+    const meshMe = carMesh(0xff5d73);
+    const bots = online ? [] : [0xff8c42, 0x7c6cff, 0x2e9e4f].map((c, i) => ({ i, p: 0, s: 0, done: 0, mesh: carMesh(c) }));
+    const oppMesh = online ? carMesh(0x2e9bff) : null;
+    let me, state = online ? 'idle' : 'ready', room = null, off = () => {}, oppPres = null, raf, tk = 0;
+    const keys = {}, pad = {};
+    const placeOn = (mesh, x, z, h) => { mesh.position.set(x, 0, z); mesh.rotation.y = h; };
+    const reset = () => {
+      me = { x: A, z: 0, h: 0, s: 0, p: 0, last: 0, done: 0 };
+      bots.forEach(b => { b.p = -0.3 - b.i * 0.12; b.s = 27 + b.i * 0.8; b.done = 0; });
+    };
+    const stepMe = dt => {
+      const r = Math.max(1e-6, Math.hypot(me.x / A, me.z / B));
+      const offRoad = Math.abs(r - 1) > 0.12;
+      const acc = keys.U || pad.g ? 16 : keys.B || pad.b ? -22 : -4;
+      me.s = Math.min(offRoad ? 14 : 34, Math.max(-6, me.s + acc * dt));
+      const turn = (keys.L || pad.l ? 1 : 0) - (keys.R || pad.r ? 1 : 0);
+      me.h += turn * (me.s / 30) * 1.7 * dt;
+      me.x += Math.sin(me.h) * me.s * dt;
+      me.z += Math.cos(me.h) * me.s * dt;
+      const r2 = Math.max(1e-6, Math.hypot(me.x / A, me.z / B));
+      if (r2 > 1.35 || r2 < 0.65) {
+        const k = (r2 > 1.35 ? 1.35 : 0.65) / r2;
+        me.x *= k; me.z *= k; me.s *= 0.6;
+      }
+      const th = Math.atan2(me.z / B, me.x / A);
+      let d = th - me.last;
+      if (d > Math.PI) d -= LAP;
+      if (d < -Math.PI) d += LAP;
+      me.p += d;
+      me.last = th;
+    };
+    const placeBots = () => bots.forEach(b => {
+      b.p += b.done ? 0 : b.s / 70 / 60;
+      placeOn(b.mesh, A * Math.cos(b.p), B * Math.sin(b.p), Math.atan2(-A * Math.sin(b.p), B * Math.cos(b.p)));
+    });
+    const checkEnd = () => {
+      if (!me.done && me.p >= GOAL) me.done = Date.now();
+      bots.forEach(b => { if (!b.done && b.p >= GOAL) b.done = Date.now(); });
+      const winners = [me, ...bots, ...(oppPres && oppPres.f ? [{ done: oppPres.f, opp: true }] : [])].filter(x => x.done).sort((a, b) => a.done - b.done);
+      if (winners.length && state === 'play') {
+        const w = winners[0];
+        state = w === me ? 'won' : 'lost';
+        $('dm').textContent = w === me ? 'You win! Press Play again.' : 'Someone finished first. Press Play again.';
+        $('dgo').style.display = '';
+        $('dgo').textContent = 'Play again';
+      }
+    };
+    const sync = () => {
+      const o = room.peers().find(p => !p.isMe && p.kind === 'viewer' && p.presence && p.presence.t);
+      oppPres = o ? o.presence : null;
+      if (oppPres && state === 'wait') { reset(); state = 'play'; $('dgo').style.display = 'none'; $('dm').textContent = 'Race started!'; }
+      room.presence({ t: Date.now(), x: +me.x.toFixed(1), z: +me.z.toFixed(1), h: +me.h.toFixed(2), p: +me.p.toFixed(2), f: me.done || 0 });
+    };
+    const hud = () => {
+      $('dsp').textContent = Math.round(Math.abs(me.s) * 3.6);
+      $('dlp').textContent = Math.min(3, Math.max(1, Math.floor(me.p / LAP) + 1));
+      const all = [me.p, ...bots.map(b => b.p), ...(oppPres && oppPres.p !== undefined ? [oppPres.p] : [])];
+      $('dpl').textContent = 1 + all.filter(v => v > me.p).length;
+    };
+    const loop = () => {
+      tk++;
+      if (state === 'play') { stepMe(1 / 60); placeBots(); checkEnd(); }
+      if (online && room && tk % 3 === 0) sync();
+      placeOn(meshMe, me.x, me.z, me.h);
+      if (oppMesh && oppPres && oppPres.x !== undefined) placeOn(oppMesh, oppPres.x, oppPres.z, oppPres.h);
+      const fx = Math.sin(me.h), fz = Math.cos(me.h), sp = Math.abs(me.s);
+      meshMe.userData.tail.emissiveIntensity = keys.B || pad.b ? 2.4 : 0.3;
+      const want = new THREE.Vector3(me.x - fx * (13 + sp * 0.06), 6 + sp * 0.02, me.z - fz * (13 + sp * 0.06));
+      if (tk < 2) camera.position.copy(want); else camera.position.lerp(want, 0.12);
+      camera.lookAt(me.x + fx * 6, 1.5, me.z + fz * 6);
+      camera.fov = 60 + Math.min(14, sp * 0.3);
+      camera.updateProjectionMatrix();
+      sun.position.set(me.x + 40, 90, me.z + 30);
+      sun.target.position.set(me.x, 0, me.z);
+      hud();
+      renderer.render(scene, camera);
+      raf = requestAnimationFrame(loop);
+    };
+    const KEY = { ArrowUp: 'U', w: 'U', W: 'U', ArrowDown: 'B', s: 'B', S: 'B', ' ': 'B', ArrowLeft: 'L', a: 'L', A: 'L', ArrowRight: 'R', d: 'R', D: 'R' };
+    const onDown = e => { const k = KEY[e.key]; if (!k || (e.target && e.target.tagName === 'INPUT')) return; e.preventDefault(); keys[k] = true; };
+    const onUp = e => { const k = KEY[e.key]; if (k) keys[k] = false; };
+    document.addEventListener('keydown', onDown);
+    document.addEventListener('keyup', onUp);
+    const hold = (id, k) => {
+      const b = $(id);
+      b.addEventListener('pointerdown', e => { e.preventDefault(); pad[k] = true; });
+      const up = () => { pad[k] = false; };
+      b.addEventListener('pointerup', up);
+      b.addEventListener('pointerleave', up);
+      b.addEventListener('pointercancel', up);
+    };
+    hold('dl', 'l'); hold('dr', 'r'); hold('dg', 'g'); hold('db', 'b');
+    $('dgo').onclick = e => { reset(); state = 'play'; $('dgo').style.display = 'none'; $('dm').textContent = 'Go!'; e.currentTarget.blur(); };
+    reset();
+    placeBots();
+    if (online) lobby('drive', t => { $('dm').textContent = t; }, r => {
+      room = r;
+      off = room.onPeers(() => {});
+      reset();
+      state = 'wait';
+      $('dm').textContent = 'Waiting for a friend to join...';
+    });
+    raf = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(raf);
+      off();
+      document.removeEventListener('keydown', onDown);
+      document.removeEventListener('keyup', onUp);
+      if (room) room.leave();
+      renderer.dispose();
+    };
+  };
+}
+add('drive-solo', 'Turbo Circuit 3D', '🏁', 'Arcade', '3D laps against three rival cars.', drive(false));
+add('drive-online', 'Turbo Circuit Online', '🏎️', 'Multiplayer', '3D laps against a friend on another device.', drive(true));
+
+function rpsLocal() {
+  return () => {
+    const E = ['✊', '✋', '✌️'];
+    app.innerHTML = `
+    <div class='panel'>
+      <div class='hud'><span id='rs'>P1 0 · P2 0</span><button class='btn' id='rr'>Reset</button></div>
+      <div class='big' id='rv'>Player 1: pick</div>
+      <div class='pad' id='rp'>${E.map((e, i) => `<button data-m='${i}' aria-label='Choice ${i + 1}'>${e}</button>`).join('')}</div>
+      <p class='hint' id='rh'>Player 2, look away while Player 1 picks.</p>
+    </div>`;
+    let first = null, sc = [0, 0];
+    $('rp').onclick = e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      const m = +b.dataset.m;
+      if (first === null) { first = m; $('rv').textContent = 'Player 2: pick'; $('rh').textContent = 'Player 1 has picked. Pass the device.'; return; }
+      const r = (first - m + 3) % 3;
+      if (r === 1) sc[0]++; else if (r === 2) sc[1]++;
+      $('rv').textContent = `${E[first]} vs ${E[m]}`;
+      $('rh').textContent = (r === 0 ? 'Draw!' : `Player ${r === 1 ? 1 : 2} wins the round.`) + ' Player 1: pick again.';
+      $('rs').textContent = `P1 ${sc[0]} · P2 ${sc[1]}`;
+      first = null;
+    };
+    $('rr').onclick = () => {
+      first = null; sc = [0, 0];
+      $('rs').textContent = 'P1 0 · P2 0';
+      $('rv').textContent = 'Player 1: pick';
+      $('rh').textContent = 'Player 2, look away while Player 1 picks.';
+    };
+    return () => {};
+  };
+}
+
+function reactionDuel() {
+  return () => {
+    app.innerHTML = `
+    <div class='panel'>
+      <div class='hud'><span id='xs'>P1 0 : 0 P2</span><button class='btn' id='xg'>Start</button></div>
+      <div class='react' id='xb'>Press Start</div>
+      <div class='hud' style='gap:10px;margin-top:12px'><button class='tapb' id='x0' style='background:#2ec4b6'>P1 · A</button><button class='tapb' id='x1' style='background:#ff8fa3'>P2 · L</button></div>
+      <p class='hint'>First to 3 points wins. Press your button when the box turns green. Press too early and your opponent scores.</p>
+    </div>`;
+    let state = 'idle', sc = [0, 0], t;
+    const show = (cls, text) => { $('xb').className = 'react ' + cls; $('xb').textContent = text; };
+    const upd = () => { $('xs').textContent = `P1 ${sc[0]} : ${sc[1]} P2`; };
+    const end = msg => {
+      state = 'idle';
+      upd();
+      const w = sc[0] >= 3 ? 1 : sc[1] >= 3 ? 2 : 0;
+      if (w) { show('', `Player ${w} wins the match!`); $('xg').textContent = 'New match'; }
+      else { show('early', msg); $('xg').textContent = 'Next round'; }
+    };
+    const round = () => {
+      clearTimeout(t);
+      state = 'wait';
+      show('wait', 'Wait for green...');
+      t = setTimeout(() => { state = 'go'; show('go', 'GO!'); }, 1500 + rand(3000));
+    };
+    const press = p => {
+      if (state === 'wait') { clearTimeout(t); sc[1 - p]++; end(`Player ${p + 1} pressed too early!`); }
+      else if (state === 'go') { sc[p]++; end(`Player ${p + 1} was faster!`); }
+    };
+    $('xg').onclick = () => {
+      if (sc[0] >= 3 || sc[1] >= 3) { sc = [0, 0]; upd(); }
+      $('xg').textContent = 'Restart';
+      $('xg').blur();
+      round();
+    };
+    ['x0', 'x1'].forEach((id, p) => { $(id).onpointerdown = e => { e.preventDefault(); press(p); }; });
+    const onKey = e => {
+      if (e.repeat) return;
+      if (e.key === 'a' || e.key === 'A') press(0);
+      else if (e.key === 'l' || e.key === 'L') press(1);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => { clearTimeout(t); document.removeEventListener('keydown', onKey); };
+  };
+}
+
+function pong2() {
+  return () => {
+    app.innerHTML = `
+    <div class='panel'>
+      <div class='hud'><span>P1 <b id='pa'>0</b></span><span>P2 <b id='pb'>0</b></span><button class='btn' id='pg'>Start</button></div>
+      <canvas id='pcv' class='cv' width='320' height='420' aria-label='Pong for two players'></canvas>
+      <p class='hint'>P1: W and S, or drag on the left half. P2: Up and Down arrows, or drag on the right half. First to 5 wins.</p>
+    </div>`;
+    const cv = $('pcv'), ctx = cv.getContext('2d');
+    const W = 320, H = 420, PH = 70, R = 6;
+    const cl = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    const keys = {};
+    let y = [175, 175], bx = W / 2, by = H / 2, dx = 3, dy = 0, sc = [0, 0], state = 'ready', raf;
+    const serve = d => { bx = W / 2; by = H / 2; dx = 3 * d; dy = (Math.random() * 2 - 1) * 2.5; };
+    const reset = () => { y = [175, 175]; sc = [0, 0]; state = 'ready'; $('pa').textContent = 0; $('pb').textContent = 0; serve(1); };
+    const point = p => {
+      sc[p]++;
+      $('pa').textContent = sc[0];
+      $('pb').textContent = sc[1];
+      serve(p === 0 ? 1 : -1);
+      if (sc[p] >= 5) { state = 'over'; $('pg').textContent = 'Play again'; }
+    };
+    function step() {
+      if (state !== 'play') return;
+      if (keys.w) y[0] -= 5;
+      if (keys.s) y[0] += 5;
+      if (keys.ArrowUp) y[1] -= 5;
+      if (keys.ArrowDown) y[1] += 5;
+      y = y.map(v => cl(v, 0, H - PH));
+      bx += dx; by += dy;
+      if (by < R || by > H - R) { dy = -dy; by = cl(by, R, H - R); }
+      if (dx < 0 && bx - R <= 18 && bx + R >= 10 && by >= y[0] - R && by <= y[0] + PH + R) {
+        dx = Math.min(7, -dx * 1.05); bx = 18 + R; dy = cl(dy + (by - y[0] - PH / 2) / (PH / 2) * 2, -6, 6);
+      }
+      if (dx > 0 && bx + R >= W - 18 && bx - R <= W - 10 && by >= y[1] - R && by <= y[1] + PH + R) {
+        dx = Math.max(-7, -dx * 1.05); bx = W - 18 - R; dy = cl(dy + (by - y[1] - PH / 2) / (PH / 2) * 2, -6, 6);
+      }
+      if (bx < -R) point(1); else if (bx > W + R) point(0);
+    }
+    function draw() {
+      ctx.fillStyle = '#1d1b3a';
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = 'rgba(246,243,255,.25)';
+      ctx.fillRect(W / 2 - 1, 0, 2, H);
+      ctx.fillStyle = '#2ec4b6';
+      ctx.fillRect(10, y[0], 8, PH);
+      ctx.fillStyle = '#ff8fa3';
+      ctx.fillRect(W - 18, y[1], 8, PH);
+      ctx.fillStyle = '#ffb70a';
+      ctx.beginPath();
+      ctx.arc(bx, by, R, 0, Math.PI * 2);
+      ctx.fill();
+      if (state !== 'play') {
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center';
+        ctx.font = '800 24px system-ui, sans-serif';
+        ctx.fillText(state === 'over' ? (sc[0] > sc[1] ? 'Player 1 wins!' : 'Player 2 wins!') : 'Ready?', W / 2, H / 2 - 40);
+        ctx.font = '600 16px system-ui, sans-serif';
+        ctx.fillText(state === 'over' ? 'Press Play again' : 'Press Start to serve', W / 2, H / 2 - 10);
+      }
+    }
+    function loop() { step(); draw(); raf = requestAnimationFrame(loop); }
+    const drag = e => {
+      if (e.pointerType === 'mouse' && !e.buttons) return;
+      const r = cv.getBoundingClientRect();
+      const side = (e.clientX - r.left) / r.width < 0.5 ? 0 : 1;
+      y[side] = cl((e.clientY - r.top) * (H / r.height) - PH / 2, 0, H - PH);
+    };
+    const down = e => { keys[e.key.length === 1 ? e.key.toLowerCase() : e.key] = true; if (e.key.startsWith('Arrow')) e.preventDefault(); };
+    const up = e => { keys[e.key.length === 1 ? e.key.toLowerCase() : e.key] = false; };
+    cv.addEventListener('pointermove', drag);
+    cv.addEventListener('pointerdown', drag);
+    document.addEventListener('keydown', down);
+    document.addEventListener('keyup', up);
+    $('pg').onclick = () => { reset(); state = 'play'; $('pg').textContent = 'Restart'; $('pg').blur(); };
+    reset();
+    loop();
+    return () => { cancelAnimationFrame(raf); document.removeEventListener('keydown', down); document.removeEventListener('keyup', up); };
+  };
+}
+
+function pig() {
+  return () => {
+    app.innerHTML = `
+    <div class='panel'>
+      <div class='hud'><span id='gs'></span><button class='btn' id='gn'>New game</button></div>
+      <div class='big' id='gd' style='font-size:3.4rem'>🎲</div>
+      <div class='hud' style='gap:10px'><button class='tapb' id='gr' style='background:#ffb70a'>Roll</button><button class='tapb' id='gk' style='background:#2ec4b6'>Hold</button></div>
+      <p class='hint' id='gm'></p>
+    </div>`;
+    const GOAL = 50, FACE = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+    let sc, p, run, over;
+    const upd = (note = '') => {
+      $('gs').textContent = `P1 ${sc[0]} · P2 ${sc[1]}`;
+      $('gm').textContent = over ? `Player ${p + 1} wins!` : `${note} Player ${p + 1}'s turn. This turn: ${run}.`.trim();
+    };
+    const newGame = () => { sc = [0, 0]; p = 0; run = 0; over = false; $('gd').textContent = '🎲'; upd('Roll to build your turn total, or hold to bank it. A 1 loses the turn total.'); };
+    $('gr').onclick = () => {
+      if (over) return;
+      const d = 1 + rand(6);
+      $('gd').textContent = FACE[d - 1];
+      if (d === 1) { run = 0; p = 1 - p; upd('Rolled a 1! Turn over.'); }
+      else { run += d; upd(); }
+    };
+    $('gk').onclick = () => {
+      if (over) return;
+      sc[p] += run;
+      run = 0;
+      if (sc[p] >= GOAL) over = true; else p = 1 - p;
+      upd();
+    };
+    $('gn').onclick = newGame;
+    newGame();
+    return () => {};
+  };
+}
+
+function memDuel() {
+  return () => {
+    const pool = [...'🐶🐱🐭🐰🦊🐻🐼🐨'];
+    app.innerHTML = `
+    <div class='panel'>
+      <div class='hud'><span id='ms'></span><button class='btn' id='mg'>New game</button></div>
+      <div class='board' id='mb'></div>
+      <p class='hint' id='mh'></p>
+    </div>`;
+    let deck, open, sc, p, busy, left;
+    const upd = () => {
+      $('ms').textContent = `P1 ${sc[0]} · P2 ${sc[1]}`;
+      $('mh').textContent = left ? `Player ${p + 1}'s turn. A match earns another turn.` : sc[0] === sc[1] ? "It's a tie!" : `Player ${sc[0] > sc[1] ? 1 : 2} wins!`;
+    };
+    const deal = () => {
+      deck = shuffle([...pool, ...pool]);
+      open = []; sc = [0, 0]; p = 0; busy = false; left = 8;
+      $('mb').innerHTML = deck.map((_, i) => `<button class='tile' data-i='${i}'>?</button>`).join('');
+      upd();
+    };
+    $('mb').onclick = e => {
+      const t = e.target.closest('.tile');
+      if (!t || busy || t.classList.contains('up') || t.classList.contains('done')) return;
+      t.classList.add('up');
+      t.textContent = deck[t.dataset.i];
+      open.push(t);
+      if (open.length < 2) return;
+      busy = true;
+      const [a, b] = open;
+      if (deck[a.dataset.i] === deck[b.dataset.i]) {
+        a.classList.add('done'); b.classList.add('done');
+        sc[p]++; left--; open = []; busy = false;
+        upd();
+      } else {
+        setTimeout(() => {
+          [a, b].forEach(x => { x.classList.remove('up'); x.textContent = '?'; });
+          open = []; busy = false; p = 1 - p;
+          upd();
+        }, 800);
+      }
+    };
+    $('mg').onclick = deal;
+    deal();
+    return () => {};
+  };
+}
+
+add('ttt-2p', 'Tic-Tac-Toe 2 Player', '❌', 'Multiplayer', 'Two players take turns on one device.', board(TTT, false));
+add('c4-2p', 'Four in a Row 2 Player', '🔴', 'Multiplayer', 'Two players drop discs on one device.', board(C4, false));
+add('rps-2p', 'Rock Paper Scissors 2P', '✌️', 'Multiplayer', 'Pass the device and out-guess a friend.', rpsLocal());
+add('race-2p', 'Tap Race 2 Player', '🏁', 'Multiplayer', 'Two thumbs, one screen. First to 30 taps wins.', race(false));
+add('react-duel', 'Reaction Duel', '⚡', 'Multiplayer', 'Hit your button first when the box turns green.', reactionDuel());
+add('pong-2p', 'Pong 2 Player', '🏓', 'Multiplayer', 'Two paddles, one screen. First to 5 wins.', pong2());
+add('pig-2p', 'Dice Pig', '🐷', 'Multiplayer', 'Push your luck. First to 50 wins.', pig());
+add('mem-duel', 'Memory Duel', '🧠', 'Multiplayer', 'Take turns finding pairs. Most pairs wins.', memDuel());
+add('ttt-online', 'Tic-Tac-Toe Online', '🌐', 'Multiplayer', 'Play a friend on another device with a room code.', board(TTT, true));
+add('c4-online', 'Four in a Row Online', '🌐', 'Multiplayer', 'Play a friend on another device with a room code.', board(C4, true));
+add('race-online', 'Tap Race Online', '🌐', 'Multiplayer', 'Race friends on other devices with a room code.', race(true));
+add('lane-solo', 'Lane Racer', '🏎️', 'Arcade', 'Dodge traffic and beat the rival car to 1000 metres.', racer(false));
+add('lane-online', 'Lane Racer Online', '🌐', 'Multiplayer', 'Race a friend on another device with a room code.', racer(true));
+const MULTI = CATALOG.filter(g => g.cat === 'Multiplayer').map(g => g.id);
+
+const store = {
+  get(k, d) { try { const v = JSON.parse(localStorage.getItem(k)); return v === null ? d : v; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+const FEATURED = ['snake', 'merge', 'glide', 'tower', 'mines', 'bricks', 'dodge', 'memory'];
+const LOGO_PAL = { Arcade: ['#ff5d73', '#ff9a44'], Memory: ['#2a6fdb', '#4facfe'], Reflex: ['#ff8c42', '#ffd23f'], Casual: ['#2ec4b6', '#43e97b'], Puzzle: ['#7c6cff', '#c58cff'], Word: ['#2e9e4f', '#a8e063'], Quiz: ['#e0a800', '#ffe259'], Math: ['#e63946', '#ff8fa3'], Multiplayer: ['#0ea5e9', '#00d2ff'] };
+const logo = g => {
+  const [a, b] = LOGO_PAL[g.cat] || ['#7c6cff', '#c58cff'];
+  const id = 'lg-' + g.id;
+  const ini = g.name.split(/[\s-]+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?';
+  return `<svg class='logo' viewBox='0 0 120 120' aria-hidden='true'><defs><linearGradient id='${id}' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='${a}'/><stop offset='1' stop-color='${b}'/></linearGradient></defs><rect x='4' y='4' width='112' height='112' rx='28' fill='url(#${id})'/><rect x='10' y='10' width='100' height='46' rx='22' fill='#fff' opacity='.2'/><rect x='5' y='5' width='110' height='110' rx='27' fill='none' stroke='#fff' stroke-width='3' opacity='.55'/><text x='60' y='70' text-anchor='middle' font-size='42'>${g.icon}</text><rect x='24' y='87' width='72' height='22' rx='11' fill='#0b1b52' opacity='.78'/><text x='60' y='103' text-anchor='middle' font-size='13' font-weight='800' fill='#fff' font-family='system-ui, sans-serif' letter-spacing='1'>${ini}</text></svg>`;
+};
+const thumbs = ids => ids.map(id => CATALOG.find(g => g.id === id)).filter(Boolean).map(g => `<a class='thumb c${CATALOG.indexOf(g) % 8}' href='#${g.id}'>${logo(g)}${g.name}</a>`).join('');
+const rowHtml = (title, ids) => { const h = thumbs(ids); return h ? `<h2 class='sec'>${title}</h2><div class='row'>${h}</div>` : ''; };
+
+function renderHome() {
+  const cats = ['All', ...new Set(CATALOG.map(g => g.cat))];
+  app.innerHTML = `
+  <section class='intro'>
+    <h1>${CATALOG.length} free games,<br>no download needed.</h1>
+    <p>Pick a game and play right in your browser on a phone, tablet, or computer.</p>
+  </section>
+  <input class='inp' id='q' type='search' placeholder='Search ${CATALOG.length} games...' autocomplete='off' aria-label='Search games'>
+  <div class='chips' id='chips'>${cats.map(c => `<button class='chip${c === 'All' ? ' on' : ''}' data-c='${c}'>${c}</button>`).join('')}</div>
+  <div id='rows'><p><a class='btn' href='#${CATALOG[rand(CATALOG.length)].id}'>🎲 Surprise me</a></p>${rowHtml('Continue playing', store.get('pa-recent', []))}${rowHtml('Your favorites', store.get('pa-favs', []))}${rowHtml('Play with friends', MULTI)}${rowHtml('Featured', FEATURED)}</div>
+  <h2 class='sec'>All games</h2>
+  <section class='games' id='gl'></section>`;
+  let cat = 'All', q = '';
+  const list = () => {
+    const s = q.trim().toLowerCase();
+    $('rows').style.display = cat === 'All' && !s ? '' : 'none';
+    const r = CATALOG.filter(g => (cat === 'All' || g.cat === cat) && (!s || (g.name + ' ' + g.desc + ' ' + g.cat).toLowerCase().includes(s)));
+    $('gl').innerHTML = r.length
+      ? r.map(g => `<a class='game c${CATALOG.indexOf(g) % 8}' href='#${g.id}'><span class='icon'>${logo(g)}</span><div><h2>${g.name}</h2><p>${g.desc}</p></div></a>`).join('')
+      : `<p class='hint'>No games found. Try another word.</p>`;
+  };
+  $('q').oninput = e => { q = e.target.value; list(); };
+  $('chips').onclick = e => {
+    const b = e.target.closest('.chip');
+    if (!b) return;
+    cat = b.dataset.c;
+    document.querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === b));
+    list();
+  };
+  list();
+}
+
+window.addEventListener('error', e => {
+  console.error(e.error);
+  app.innerHTML = '<div class="panel"><p class="hint">This game hit a problem. <a href="#">Back to all games</a>.</p></div>';
+});
+
+function aboutPage() {
+  app.innerHTML = `
+  <div class='panel about'>
+    <div class='av'>PS</div>
+    <h1 class='gt'>Syal Play</h1>
+    <p class='hint'>A free browser arcade with ${CATALOG.length} original games, playable on PC and phone.</p>
+    <p class='hint'>Made by <b>Pranjal Syal</b>.</p>
+    <p class='hint'>Online rooms work for friends who open the shared link.</p>
+    <p class='hint'><a class='back' href='#'>← Back to games</a></p>
+  </div>`;
+  return () => {};
+}
+
+let audioCtx = null;
+let sfxOn = store.get('pa-sfx', true);
+const beep = (f = 660, d = 0.06, type = 'square', v = 0.04) => {
+  if (!sfxOn) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.value = f;
+    g.gain.setValueAtTime(v, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d);
+    o.connect(g);
+    g.connect(audioCtx.destination);
+    o.start();
+    o.stop(audioCtx.currentTime + d);
+  } catch (e) {}
+};
+document.addEventListener('pointerdown', e => {
+  if (e.target && e.target.closest && e.target.closest('button, a, .tile, .cell, .hole, .slot, .lamp, .pad4, .tile2, .mc, .react, .opt, .key, .chip, .game, .thumb')) beep(520, 0.05);
+});
+$('sfxb').onclick = e => {
+  sfxOn = !sfxOn;
+  store.set('pa-sfx', sfxOn);
+  $('sfxb').textContent = sfxOn ? '🔊' : '🔇';
+  if (sfxOn) beep(880, 0.08);
+  e.currentTarget.blur();
+};
+$('sfxb').textContent = sfxOn ? '🔊' : '🔇';
+
+function route() {
+  stop();
+  const name = location.hash.slice(1);
+  if (name === 'about') { stop = aboutPage(); window.scrollTo(0, 0); return; }
+  const g = CATALOG.find(x => x.id === location.hash.slice(1));
+  if (g) {
+    stop = g.run() || (() => {});
+    store.set('pa-recent', [g.id, ...store.get('pa-recent', []).filter(x => x !== g.id)].slice(0, 8));
+    const fav = store.get('pa-favs', []).includes(g.id);
+    app.insertAdjacentHTML('afterbegin', `<div class='gh'><div class='ghr'><a class='back' href='#'>← All games</a><span><button class='ico' id='fv' aria-label='Favorite'>${fav ? '❤️' : '🤍'}</button>${document.fullscreenEnabled ? `<button class='ico' id='fs' aria-label='Fullscreen'>⛶</button>` : ''}</span></div><h1 class='gt'>${logo(g)} ${g.name}</h1></div>`);
+    $('fv').onclick = () => {
+      const f = store.get('pa-favs', []), on = !f.includes(g.id);
+      store.set('pa-favs', on ? [g.id, ...f] : f.filter(x => x !== g.id));
+      $('fv').textContent = on ? '❤️' : '🤍';
+    };
+    if ($('fs')) $('fs').onclick = () => { const p = document.querySelector('.panel'); if (p && p.requestFullscreen) Promise.resolve(p.requestFullscreen()).catch(() => {}); };
+    const more = shuffle(CATALOG.filter(x => x.cat === g.cat && x.id !== g.id)).slice(0, 8).map(x => x.id);
+    app.insertAdjacentHTML('beforeend', `<div class='more'>${rowHtml('More ' + g.cat + ' games', more)}</div>`);
+  } else {
+    renderHome();
+    stop = () => {};
+  }
+  window.scrollTo(0, 0);
+}
+addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
